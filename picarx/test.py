@@ -95,6 +95,8 @@ if __name__ == "__main__":
                 passed = parallelParkingRight(px)
             case "e":
                 running = False
+            case _:
+                print("Invalid input")
         if passed and running:
             print("Car executed manuever successfully. Awaiting new input...")
         elif not running:
