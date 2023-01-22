@@ -9,7 +9,7 @@ def moveBackAndForth(px):
     px.stop()
 
 def kTurn(px):
-    speed = 70
+    speed = 50
     angle = 35
     #Right Turn
     px.set_dir_servo_angle(angle)
@@ -23,7 +23,7 @@ def kTurn(px):
     px.stop()
     #Right Turn foward
     px.set_dir_servo_angle(angle)
-    px.forward(20)
+    px.forward(40)
     time.sleep(1)
     px.stop()
     #Move forward towards original postion
