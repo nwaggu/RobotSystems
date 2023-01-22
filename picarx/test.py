@@ -45,7 +45,7 @@ def parallelParkingRight(px):
     px.stop()
     #Straighten out car
     px.set_dir_servo_angle(-10)
-    px.backward(20)
+    px.backward(e20)
     time.sleep(2)
     px.stop()
     return True
@@ -72,16 +72,31 @@ if __name__ == "__main__":
     while running:
         #Print Menu
         print('Select a motion')
-        print("A: K-Turn")
-        print("B: Forward and Back")
-        print("C: Parrallel Park Left")
-        print("D: Parallel Part Right")
-        print("E: Quit")
+        print("a: K-Turn")
+        print("b: Forward and Back")
+        print("c: Parrallel Park Left")
+        print("d: Parallel Part Right")
+        print("e: Quit")
         #Get User input
         user_input = input("Select a menu option: ")
         passed = False
-        if user_input == "a": 
-            moveBackAndForth(px)
+        if user_input =="a": 
+                print("K Turn Chosen")
+                passed = kTurn(px)
+        elif user_input =="b":
+                print("Forward and Back Chosen")
+                passed = moveBackAndForth(px)
+        elif user_input =="c": 
+                print("Parallel Park Left Chosen")
+                passed = parallelParkingLeft(px)
+        elif user_input =="d":
+                print("Parallel Park Right Chosen")
+                passed = parallelParkingRight(px)
+        elif user_input =="e":
+                running = False
+                print("Quit Chosen")
+        else:
+                print("Invalid input")
         if passed and running:
             print("Car executed manuever successfully. Awaiting new input...")
         elif not running:
