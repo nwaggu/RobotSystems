@@ -23,8 +23,8 @@ def kTurn(px):
     px.stop()
     #Right Turn foward
     px.set_dir_servo_angle(angle)
-    px.forward(40)
-    time.sleep(1)
+    px.forward(speed)
+    time.sleep(0.3)
     px.stop()
     #Move forward towards original postion
     px.forward(40)
