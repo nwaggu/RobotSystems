@@ -9,8 +9,8 @@ def moveBackAndForth(px):
     px.stop()
 
 def kTurn(px):
-    speed = 50
-    angle = 35
+    speed = 70
+    angle = 30
     #Right Turn
     px.set_dir_servo_angle(angle)
     px.forward(speed)
