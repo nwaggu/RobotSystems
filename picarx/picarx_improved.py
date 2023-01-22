@@ -14,11 +14,6 @@ import math
 
 
 
-def onexit():
-    px = Picarx()
-    px.stop()
-
-atexit.register(onexit)
 time.sleep(0.2)
 
 # user and User home directory
