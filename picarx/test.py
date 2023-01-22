@@ -3,9 +3,13 @@ import time
 
 #Moves the picar forward and back 
 def moveBackAndForth(px):
+    #Move forward
     px.forward(50)
     time.sleep(1)
+    px.stop()
+    #Move back
     px.backward(50)
+    time.sleep(1)
     px.stop()
 
 def kTurn(px):
@@ -28,22 +32,39 @@ def kTurn(px):
     px.stop()
     
 def parallelParkingRight(px):
+    #Inch backwards for space
     px.backward(20)
     time.sleep(1)
     px.stop()
+    #Turn left into spot
     px.set_dir_servo_angle(10)
     px.backward(20)
     time.sleep(2)
+    px.stop()
+    #Straighten out car
+    px.set_dir_servo_angle(-10)
+    px.backward(20)
+    time.sleep(2)
+    px.stop()
+
+def parallelParkingLeft(px):
+    px.backward(20)
+    time.sleep(1)
     px.stop()
     px.set_dir_servo_angle(-10)
     px.backward(20)
     time.sleep(2)
     px.stop()
-    
+    px.set_dir_servo_angle(10)
+    px.backward(20)
+    time.sleep(2)
+    px.stop()
+
+
     
 if __name__ == "__main__":
     px = picar.Picarx()
-    parallelParkingRight(px)
+    parallelParkingLeft(px)
 
     
     
