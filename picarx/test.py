@@ -11,6 +11,7 @@ def moveBackAndForth(px):
     px.backward(50)
     time.sleep(1)
     px.stop()
+    return True
 
 def kTurn(px):
     speed = 70
@@ -30,6 +31,7 @@ def kTurn(px):
     px.forward(30)
     time.sleep(1.5)
     px.stop()
+    return True
     
 def parallelParkingRight(px):
     #Inch backwards for space
@@ -46,6 +48,7 @@ def parallelParkingRight(px):
     px.backward(20)
     time.sleep(2)
     px.stop()
+    return True
 
 def parallelParkingLeft(px):
     px.backward(20)
@@ -59,11 +62,50 @@ def parallelParkingLeft(px):
     px.backward(20)
     time.sleep(2)
     px.stop()
+    return True
 
 
     
 if __name__ == "__main__":
     px = picar.Picarx()
+    running = True
+    while running:
+        #Print Menu
+        print('Select a motion')
+        print("A: K-Turn")
+        print("B: Forward and Back")
+        print("C: Parrallel Park Left")
+        print("D: Parallel Part Right")
+        print("E: Quit")
+        #Get User input
+        user_input = input()
+        passed = False
+        match user_input:
+            case "a": 
+                print("K Turn Chosen")
+                passed = kTurn(px)
+            case "b":
+                print("Forward and Back Chosen")
+                passed = moveBackAndForth(px)
+            case "c": 
+                print("Parallel Park Left Chosen")
+                passed = parallelParkingLeft(px)
+            case "d":
+                print("Parallel Park Right Chosen")
+                passed = parallelParkingRight(px)
+            case "e":
+                running = False
+        if passed and running:
+            print("Car executed manuever successfully. Awaiting new input...")
+        elif not running:
+            print("Exiting script.")
+        else:
+            print("Something went wrong!")
+            
+                
+            
+    
+    
     parallelParkingLeft(px)
 
     
