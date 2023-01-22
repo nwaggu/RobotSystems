@@ -80,23 +80,8 @@ if __name__ == "__main__":
         #Get User input
         user_input = input("Select a menu option: ")
         passed = False
-        match user_input:
-            case "a": 
-                print("K Turn Chosen")
-                passed = kTurn(px)
-            case "b":
-                print("Forward and Back Chosen")
-                passed = moveBackAndForth(px)
-            case "c": 
-                print("Parallel Park Left Chosen")
-                passed = parallelParkingLeft(px)
-            case "d":
-                print("Parallel Park Right Chosen")
-                passed = parallelParkingRight(px)
-            case "e":
-                running = False
-            case _:
-                print("Invalid input")
+        if user_input == "a": 
+            moveBackAndForth(px)
         if passed and running:
             print("Car executed manuever successfully. Awaiting new input...")
         elif not running:
