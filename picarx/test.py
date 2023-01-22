@@ -24,15 +24,21 @@ def kTurn(px):
     #Right Turn foward
     px.set_dir_servo_angle(angle)
     px.forward(30)
-    time.sleep(2)
+    time.sleep(1.5)
     px.stop()
-    #Move forward towards original postion
     
+def parallelParkingRight(px):
+    px.backward(40)
+    time.sleep(1)
+    px.stop()
+    px.set_dir_servo_angle(10)
+    px.backward(40)
+    px.stop()
     
     
 if __name__ == "__main__":
     px = picar.Picarx()
-    kTurn(px)
+    parallelParkingRight(px)
 
     
     
