@@ -9,10 +9,24 @@ def moveBackAndForth(px):
     px.stop()
 
 def kTurn(px):
+    speed = 70
+    angle = 35
+    #Right Turn
     px.set_dir_servo_angle(35)
     px.forward(70)
     time.sleep(1)
     px.stop()
+    #Left Turn Out
+    px.set_dir_servo_angle(-35)
+    px.backward(70)
+    time.sleep(1)
+    px.stop()
+    #Right Turn foward
+    px.set_dir_servo_angle(35)
+    px.forward(30)
+    time.sleep(1)
+    px.stop()
+    
     
 if __name__ == "__main__":
     px = picar.Picarx()
