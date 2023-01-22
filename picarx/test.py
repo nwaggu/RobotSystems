@@ -3,6 +3,7 @@ import time
 
 #Moves the picar forward and back 
 def moveBackAndForth(px):
+    px.set_dir_servo_angle(0)
     #Move forward
     px.forward(50)
     time.sleep(1)
@@ -14,6 +15,7 @@ def moveBackAndForth(px):
     return True
 
 def kTurn(px):
+    px.set_dir_servo_angle(0)
     speed = 70
     angle = 30
     #Right Turn
@@ -34,6 +36,7 @@ def kTurn(px):
     return True
     
 def parallelParkingRight(px):
+    px.set_dir_servo_angle(0)
     #Inch backwards for space
     px.backward(20)
     time.sleep(1)
@@ -51,6 +54,7 @@ def parallelParkingRight(px):
     return True
 
 def parallelParkingLeft(px):
+    px.set_dir_servo_angle(0)
     px.backward(20)
     time.sleep(1)
     px.stop()
