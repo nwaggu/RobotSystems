@@ -12,6 +12,7 @@ def moveBackAndForth(px):
     px.backward(50)
     time.sleep(1)
     px.stop()
+    px.set_dir_servo_angle(0)
     return True
 
 def kTurn(px):
@@ -33,6 +34,7 @@ def kTurn(px):
     px.forward(30)
     time.sleep(1.5)
     px.stop()
+    px.set_dir_servo_angle(0)
     return True
     
 def parallelParkingRight(px):
@@ -51,6 +53,7 @@ def parallelParkingRight(px):
     px.backward(20)
     time.sleep(2)
     px.stop()
+    px.set_dir_servo_angle(0)
     return True
 
 def parallelParkingLeft(px):
@@ -66,6 +69,7 @@ def parallelParkingLeft(px):
     px.backward(20)
     time.sleep(2)
     px.stop()
+    px.set_dir_servo_angle(0)
     return True
 
 
