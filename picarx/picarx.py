@@ -200,6 +200,6 @@ class Picarx(object):
 
 if __name__ == "__main__":
     px = Picarx()
-    px.forward(50)
+    px.backward(50)
     time.sleep(1)
     px.stop()
