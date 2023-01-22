@@ -14,6 +14,11 @@ import math
 
 
 
+def onexit():
+    px = Picarx()
+    px.stop()
+
+atexit.register(onexit)
 time.sleep(0.2)
 
 # user and User home directory
@@ -212,7 +217,7 @@ class Picarx(object):
 
 if __name__ == "__main__":
     px = Picarx()
-    px.backward(50)
+    px.forward(50)
     time.sleep(1)
     px.stop()
 
