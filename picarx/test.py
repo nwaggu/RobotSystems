@@ -12,18 +12,22 @@ def kTurn(px):
     speed = 70
     angle = 35
     #Right Turn
-    px.set_dir_servo_angle(35)
-    px.forward(70)
+    px.set_dir_servo_angle(angle)
+    px.forward(speed)
     time.sleep(1)
     px.stop()
     #Left Turn Out
-    px.set_dir_servo_angle(-35)
-    px.backward(70)
+    px.set_dir_servo_angle(-angle)
+    px.backward(speed)
     time.sleep(1)
     px.stop()
     #Right Turn foward
-    px.set_dir_servo_angle(35)
-    px.forward(30)
+    px.set_dir_servo_angle(angle)
+    px.forward(20)
+    time.sleep(1)
+    px.stop()
+    #Move forward towards original postion
+    px.forward(40)
     time.sleep(1)
     px.stop()
     
