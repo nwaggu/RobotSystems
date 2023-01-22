@@ -160,9 +160,12 @@ class Picarx(object):
         if current_angle != 0:
             abs_current_angle = abs(current_angle)
             # if abs_current_angle >= 0:
-            if abs_current_angle > 40:
-                abs_current_angle = 40
-            power_scale = (100 - abs_current_angle) / 100.0 
+            length = 8
+            thickness = 5 
+            r = length/math.radians(abs_current_angle)
+            outer_angle = r + thickness/2
+            inner_angle = r - thickness/2
+            power_scale = (inner_angle/outer_angle) 
             # print("power_scale:",power_scale)
             if (current_angle / abs_current_angle) > 0:
                 self.set_motor_speed(1, -1*speed)
@@ -179,12 +182,12 @@ class Picarx(object):
         if current_angle != 0:
             abs_current_angle = abs(current_angle)
             # if abs_current_angle >= 0:
-            length = 12
+            length = 8
             thickness = 5 
             r = length/math.radians(abs_current_angle)
             outer_angle = r + thickness/2
             inner_angle = r - thickness/2
-            power_scale = (outer_angle/inner_angle) 
+            power_scale = (inner_angle/outer_angle) 
             # if angle is positive
             if (current_angle / abs_current_angle) > 0:
                 self.set_motor_speed(1, 1*speed * power_scale)
