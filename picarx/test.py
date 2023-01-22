@@ -48,7 +48,7 @@ def parallelParkingRight(px):
     px.stop()
     #Straighten out car
     px.set_dir_servo_angle(-10)
-    px.backward(e20)
+    px.backward(20)
     time.sleep(2)
     px.stop()
     return True
@@ -104,15 +104,10 @@ if __name__ == "__main__":
         if passed and running:
             print("Car executed manuever successfully. Awaiting new input...")
         elif not running:
-            print("Exiting script.")
+            print("Exiting script...")
         else:
             print("Something went wrong!")
-            
-                
-            
-    
-    
-    parallelParkingLeft(px)
+    print("Exit Successful")
 
     
     
