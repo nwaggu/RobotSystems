@@ -9,8 +9,8 @@ def moveBackAndForth(px):
     px.stop()
 
 def kTurn(px):
-    px.set_dir_servo_angle(30)
-    px.forward(50)
+    px.set_dir_servo_angle(35)
+    px.forward(70)
     time.sleep(1)
     px.stop()
     
