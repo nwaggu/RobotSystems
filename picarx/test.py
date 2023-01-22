@@ -33,6 +33,7 @@ def parallelParkingRight(px):
     px.stop()
     px.set_dir_servo_angle(10)
     px.backward(40)
+    time.sleep(1)
     px.stop()
     
     
