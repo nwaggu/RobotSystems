@@ -11,7 +11,7 @@ def moveBackAndForth(px):
 def kTurn(px):
     px.set_dir_servo_angle(30)
     px.forward(50)
-    time.sleep()
+    time.sleep(1)
     px.stop()
     
 if __name__ == "__main__":
