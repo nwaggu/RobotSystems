@@ -78,7 +78,7 @@ if __name__ == "__main__":
         print("D: Parallel Part Right")
         print("E: Quit")
         #Get User input
-        user_input = input()
+        user_input = input("Select a menu option: ")
         passed = False
         match user_input:
             case "a": 
