@@ -1,8 +1,9 @@
 import time
 try:
-    from robot_hat import *
-    from robot_hat import __reset_mcu__
-    __reset_mcu__ ()
+    from robot_hat import Pin, PWM, Servo, fileDB
+    from robot_hat import Grayscale_Module, Ultrasonic
+    from robot_hat.utils import reset_mcu
+    reset_mcu()
     time.sleep (0.01)
 except ImportError:
     print ("This computer does not appear to be a PiCar -X system (robot_hat is not present). Shadowing hardware calls with substitute functions ")
