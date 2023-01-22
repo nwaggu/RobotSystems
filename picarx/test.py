@@ -28,16 +28,16 @@ def kTurn(px):
     px.stop()
     
 def parallelParkingRight(px):
-    px.backward(40)
+    px.backward(20)
     time.sleep(1)
     px.stop()
     px.set_dir_servo_angle(10)
-    px.backward(40)
-    time.sleep(1)
+    px.backward(20)
+    time.sleep(2)
     px.stop()
     px.set_dir_servo_angle(-10)
-    px.backward(40)
-    time.sleep(1)
+    px.backward(20)
+    time.sleep(2)
     px.stop()
     
     
