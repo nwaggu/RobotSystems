@@ -14,11 +14,7 @@ import math
 
 
 
-def onexit():
-    px = Picarx()
-    px.stop()
 
-atexit.register(onexit)
 time.sleep(0.2)
 
 # user and User home directory
@@ -46,7 +42,12 @@ class Picarx(object):
                 ultrasonic_pins:list=['D2','D3'],
                 config:str=config_file,
                 ):
-
+        self.servo_pins = servo_pins
+        self.motor_pins = motor_pins
+        self.greyscale_pins = grayscale_pins
+        self.ultrasonic_pins = ultrasonic_pins
+        self.config_flie = config_file
+        atexit.register(self.cleanup)
         # config_flie
         self.config_flie = fileDB(config, 774, User)
         # servos init 
@@ -217,11 +218,8 @@ class Picarx(object):
     def get_line_status(self,gm_val_list):
         return str(self.grayscale.get_line_status(gm_val_list))
 
+    def cleanup(self):
+        self.stop()
 
-if __name__ == "__main__":
-    px = Picarx()
-    px.forward(50)
-    time.sleep(1)
-    px.stop()
 
 
