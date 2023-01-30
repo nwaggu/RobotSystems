@@ -15,7 +15,7 @@ import math
 
 
 class PicarxSensor(object):
-    def __init__(self, greyscale_pins:list = ['A0', 'A1', 'A2'], reference = 1000):
+    def __init__(self, greyscale_pins:list = ['A0', 'A1', 'A2'], reference = 1500):
         #Greyscale Dataa
         self.chn_0 = ADC(greyscale_pins[0])
         self.chn_1 = ADC(greyscale_pins[1])
@@ -31,11 +31,37 @@ class PicarxSensor(object):
 
 class Interpreter(object):
     #Sensitivity, true = darker, false = lighter
-    def __init__(self, sensitivity, polarity):
+    def __init__(self, sensitivity=500, polarity=True, initial_greyscale=[1500,1500,1500]):
         self.sensitivity = sensitivity
         self.polarity = polarity
+        self.old_greyscale_data = initial_greyscale
+    
+    def react(self, new_greyscale_data):
+        #Check for drop on sides
+        drop_left = new_greyscale_data[0]-self.old_greyscale_data[0]
+        drop_right = new_greyscale_data[2]-self.old_greyscale_data[2]
+        if abs(drop_left) > self.sensitivity or abs(drop_right) > self.sensitivity:
+            print("drop detected")
+        if self.polarity:
+            if drop_left <= -self.sensitivity or drop_right <= -self.sensitivity:
+                if drop_left <= -self.sensitivity:
+                    pass
+                else:
+                    pass
+        else:
+            if drop_left >= self.sensitivity or drop_right >= self.sensitivity:
+                if drop_left >= self.sensitivity:
+                    pass
+                else:
+                    pass
+
+            
+
+
 
 if __name__=='__main__':
     sensors = PicarxSensor()
+    interpreter = Interpreter() 
     while True:
-        print(sensors.read_greyscale_data())
+        interpreter.react(sensors.read_greyscale_data())
+        
