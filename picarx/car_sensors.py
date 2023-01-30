@@ -38,4 +38,4 @@ class Interpreter(object):
 if __name__=='__main__':
     sensors = PicarxSensor()
     while True:
-        sensors.read_greyscale_data()
+        print(sensors.read_greyscale_data())
