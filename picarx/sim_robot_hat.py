@@ -338,3 +338,17 @@ class Grayscale_Module(object):
 
     def get_grayscale_data(self):
         return [1,1,1]
+
+
+class ADC():
+    ADDR=0x14                   # 扩展板的地址为0x14
+
+    def __init__(self, chn):    # 参数，通道数，树莓派扩展板上有8个adc通道分别为"A0, A1, A2, A3, A4, A5, A6, A7"
+        pass
+        
+    def read(self):                     # adc通道读取数---写一次数据，读取两次数据 （读取的数据范围是0~4095）
+        return 1
+
+    def read_voltage(self):                             # 将读取的数据转化为电压值（0~3.3V）
+        return 0.5
+        
