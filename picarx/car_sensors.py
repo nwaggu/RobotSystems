@@ -67,4 +67,5 @@ if __name__=='__main__':
     interpreter = Interpreter() 
     while True:
         interpreter.react(sensors.read_greyscale_data())
+        time.sleep(1)
         
