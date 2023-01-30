@@ -42,6 +42,8 @@ class Interpreter(object):
         drop_right = new_greyscale_data[2]-self.old_greyscale_data[2]
         if abs(drop_left) > self.sensitivity or abs(drop_right) > self.sensitivity:
             print("drop detected")
+            print(drop_left)
+            print(drop_right)
         if self.polarity:
             if drop_left <= -self.sensitivity or drop_right <= -self.sensitivity:
                 if drop_left <= -self.sensitivity:
@@ -54,6 +56,7 @@ class Interpreter(object):
                     pass
                 else:
                     pass
+        self.old_greyscale_data = new_greyscale_data
 
             
 
