@@ -56,6 +56,7 @@ if __name__=='__main__':
     sensors = PicarxSensor()
     interpreter = Interpreter() 
     while True:
+        print(sensors.read_greyscale_data())
         interpreter.react(sensors.read_greyscale_data())
         time.sleep(1)
         
