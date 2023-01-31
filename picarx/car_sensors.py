@@ -70,15 +70,15 @@ class Controller(object):
     def __init__(self, scaling=0, angle=35):
         self.scaling = scaling
         self.angle = angle
+        self.car = px.Picarx()
     
-    def steer(self, scaling, px):
+    def steer(self, scaling):
         directed_angle = self.scaling*self.angle
-        px.set_dir_servo_angle(directed_angle)
+        self.car.set_dir_servo_angle(directed_angle)
         return directed_angle
 
 
 def steerOnLine():
-    car = px.Picarx()
     sensors = PicarxSensor()
     interpreter = Interpreter(initial_greyscale=sensors.read_greyscale_data()) 
     controller = Controller()
