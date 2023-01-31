@@ -58,6 +58,7 @@ class Interpreter(object):
                 position = drops[0]*1 + drops[1]*0 + -1*drops[2]
         
         self.old_greyscale_data = new_greyscale_data
+        print(new_greyscale_data)
         print("position")
         print(position)
         return position
