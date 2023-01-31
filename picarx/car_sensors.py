@@ -40,13 +40,20 @@ class Interpreter(object):
     def react(self, new_greyscale_data):
         #Check for drop on sides
         position = 0
+        
         drop_left = new_greyscale_data[0]-self.old_greyscale_data[0]
         drop_middle = new_greyscale_data[1]-self.old_greyscale_data[1]
         drop_right = new_greyscale_data[2]-self.old_greyscale_data[2]
-        summed_drops = drop_middle + drop_left+ drop_right
-        if summed_drops != 0:
-            drops = [drop_left/summed_drops, drop_middle/summed_drops, drop_right/summed_drops]
-            position = drops[0]*1 + drops[1]*0 + -1*drops[2]
+        if drop_left >= self.sensitivity or drop_right >= self.sensitivity or drop_middle >= self.sensitivity and self.polarity:
+            summed_drops = drop_middle + drop_left+ drop_right
+            if summed_drops != 0:
+                drops = [drop_left/summed_drops, drop_middle/summed_drops, drop_right/summed_drops]
+                position = drops[0]*1 + drops[1]*0 + -1*drops[2]
+        elif drop_left <= self.sensitivity or drop_right <= self.sensitivity or drop_middle <= self.sensitivity and not self.polarity:
+            summed_drops = drop_middle + drop_left+ drop_right
+            if summed_drops != 0:
+                drops = [drop_left/summed_drops, drop_middle/summed_drops, drop_right/summed_drops]
+                position = drops[0]*1 + drops[1]*0 + -1*drops[2]
         
         self.old_greyscale_data = new_greyscale_data
         print("position")
