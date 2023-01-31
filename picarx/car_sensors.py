@@ -80,7 +80,6 @@ def steerOnLine():
     controller = Controller()
     while True:
         controller.steer(interpreter.react(sensors.read_greyscale_data()), car)
-        time.sleep(1)
 
 if __name__=='__main__':
     steerOnLine()
