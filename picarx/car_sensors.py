@@ -48,11 +48,13 @@ class Interpreter(object):
             summed_drops = drop_middle + drop_left+ drop_right
             if summed_drops != 0:
                 drops = [drop_left/summed_drops, drop_middle/summed_drops, drop_right/summed_drops]
+                print(drops)
                 position = drops[0]*1 + drops[1]*0 + -1*drops[2]
         elif drop_left <= self.sensitivity or drop_right <= self.sensitivity or drop_middle <= self.sensitivity and not self.polarity:
             summed_drops = drop_middle + drop_left+ drop_right
             if summed_drops != 0:
                 drops = [drop_left/summed_drops, drop_middle/summed_drops, drop_right/summed_drops]
+                print(drops)
                 position = drops[0]*1 + drops[1]*0 + -1*drops[2]
         
         self.old_greyscale_data = new_greyscale_data
