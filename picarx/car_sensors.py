@@ -41,9 +41,9 @@ class Interpreter(object):
         #Check for drop on sides
         position = 0
         
-        drop_left = new_greyscale_data[0]-self.old_greyscale_data[0]
-        drop_middle = new_greyscale_data[1]-self.old_greyscale_data[1]
-        drop_right = new_greyscale_data[2]-self.old_greyscale_data[2]
+        drop_left = self.old_greyscale_data[0]-new_greyscale_data[0]
+        drop_middle = self.old_greyscale_data[1]-new_greyscale_data[1]
+        drop_right = self.old_greyscale_data[2]-new_greyscale_data[2]
         if (drop_left >= self.sensitivity and self.polarity) or (drop_right >= self.sensitivity and self.polarity) or (drop_middle >= self.sensitivity and self.polarity):
             summed_drops = abs(drop_middle) + abs(drop_left)+ abs(drop_right)
             if summed_drops != 0:
