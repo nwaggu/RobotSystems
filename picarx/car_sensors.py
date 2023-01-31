@@ -45,10 +45,13 @@ class Interpreter(object):
         drop_middle = self.old_greyscale_data[1]-new_greyscale_data[1]
         drop_right = self.old_greyscale_data[2]-new_greyscale_data[2]
         if (drop_left >= self.sensitivity and self.polarity) or (drop_right >= self.sensitivity and self.polarity) or (drop_middle >= self.sensitivity and self.polarity):
+            print(drop_left)
+            print(drop_middle)
+            print(drop_right)
             summed_drops = abs(drop_middle) + abs(drop_left)+ abs(drop_right)
             if summed_drops != 0:
                 drops = [abs(drop_left)/summed_drops, abs(drop_middle)/summed_drops, abs(drop_right)/summed_drops]
-                print(drops)
+                #print(drops)
                 position = drops[0]*1 + drops[1]*0 + -1*drops[2]
         #elif drop_left <= self.sensitivity or drop_right <= self.sensitivity or drop_middle <= self.sensitivity and not self.polarity:
         #    summed_drops = abs(drop_middle) + abs(drop_left)+ abs(drop_right)
