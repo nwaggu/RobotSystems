@@ -73,6 +73,7 @@ class Controller(object):
         self.car = px.Picarx()
     
     def steer(self, scaling):
+        self.scaling = scaling
         directed_angle = self.scaling*self.angle
         self.car.set_dir_servo_angle(directed_angle)
         return directed_angle
@@ -83,7 +84,7 @@ def steerOnLine():
     interpreter = Interpreter(initial_greyscale=sensors.read_greyscale_data()) 
     controller = Controller()
     while True:
-        controller.steer(interpreter.react(sensors.read_greyscale_data()), car)
+        controller.steer(interpreter.react(sensors.read_greyscale_data()))
         time.sleep(2)
 
 if __name__=='__main__':
