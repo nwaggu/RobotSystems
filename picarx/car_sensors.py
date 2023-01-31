@@ -42,7 +42,7 @@ class Interpreter(object):
         drop_middle = new_greyscale_data[1]-self.old_greyscale_data[1]
         drop_right = new_greyscale_data[2]-self.old_greyscale_data[2]
         summed_drops = drop_middle + drop_left+ drop_right
-        drops = [drop_left, drop_middle, drop_right]/summed_drops
+        drops = [drop_left/summed_drops, drop_middle/summed_drops, drop_right/summed_drops]
         position = drops[0]*1 + drops[1]*0 + -1*drops[2]
         
         self.old_greyscale_data = new_greyscale_data
