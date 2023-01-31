@@ -12,6 +12,7 @@ except ImportError:
 import os
 import atexit
 import math 
+import picarx_improved as px
 
 
 class PicarxSensor(object):
@@ -48,17 +49,30 @@ class Interpreter(object):
             position = drops[0]*1 + drops[1]*0 + -1*drops[2]
         
         self.old_greyscale_data = new_greyscale_data
+        print("position")
+        print(position)
         return position
 
-            
+class Controller(object):
+    def __init__(self, scaling=0, angle=35):
+        self.scaling = scaling
+        self.angle = angle
+    
+    def steer(self, scaling, px):
+        directed_angle = self.scaling*self.angle
+        px.set_dir_servo_angle(directed_angle)
+        return directed_angle
 
 
+def steerOnLine():
+    car = px.Picarx()
+    sensors = PicarxSensor()
+    interpreter = Interpreter(initial_greyscale=sensors.read_greyscale_data()) 
+    controller = Controller()
+    while True:
+        controller.steer(interpreter.react(sensors.read_greyscale_data()), car)
+        time.sleep(1)
 
 if __name__=='__main__':
-    sensors = PicarxSensor()
-    interpreter = Interpreter() 
-    while True:
-        print(sensors.read_greyscale_data())
-        interpreter.react(sensors.read_greyscale_data())
-        time.sleep(1)
+    steerOnLine()
         
