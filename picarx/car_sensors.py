@@ -81,6 +81,7 @@ def steerOnLine():
     controller = Controller()
     controller.moveForward()
     while True:
+        pass
         #controller.steer(interpreter.react(sensors.read_greyscale_data()))
         
 
