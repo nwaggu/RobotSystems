@@ -72,7 +72,7 @@ class Controller(object):
         self.car.set_dir_servo_angle(directed_angle)
         return directed_angle
 
-    def moveForward(self):
+    def moveForward(self): 
         self.car.forward(25)
 
 def steerOnLine():
@@ -81,8 +81,7 @@ def steerOnLine():
     controller = Controller()
     controller.moveForward()
     while True:
-        pass
-        #controller.steer(interpreter.react(sensors.read_greyscale_data()))
+        controller.steer(interpreter.react(sensors.read_greyscale_data()))
         
 
 if __name__=='__main__':
