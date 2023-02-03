@@ -78,11 +78,11 @@ class CameraInterpreter(object):
         if sensor_data == (0,0,0,0):
             print("Line not detected")
             return 0
-        #Add the x distance plus half the mapped rectangle's width
+        #Add the x distance plus half the mapped rectangle's width to get rectangle center
         midpoint_x = sensor_data[0] + sensor_data[2]/2
-        midpoint_y = sensor_data[1] + sensor_data[3]/2 
         edge_one = 320-self.sensitivity
         edge_two = 320+self.sensitivity
+        #Check if off center (320,240)
         if not edge_one <= midpoint_x <= edge_two:
             if midpoint_x >= 320:
                 return 1*(midpoint_x-320)/320
@@ -112,17 +112,18 @@ class CameraController(object):
         self.car.forward(25)
 
 
-
-
+#Main Script
 with PiCamera() as camera:
-    logging.debug("Starting Camera Line Following")
+    logging.debug("Starting Camera Line Following, 2 Second delay before start")
+    logging.debug("Use VNC to see camera perspective")
+    logging.debug("By default BLUE lines are followed.")
     camera.resolution = (640,480)
     camera.framerate = 24
     rawCapture = PiRGBArray(camera, size=camera.resolution)  
-    time.sleep(2)
     sensor = CameraSensor()
     interpreter = CameraInterpreter()
     controller = CameraController()
+    time.sleep(2)
     controller.moveForward()
 
     for frame in camera.capture_continuous(rawCapture, format="bgr",use_video_port=True):# use_video_port=True
