@@ -49,7 +49,6 @@ class Interpreter(object):
             print("Edge detected")
                 
             if self.polarity and max(left_middle_difference,right_middle_difference) > 0:
-                print(-1*(abs(left_middle_difference)/total_change) + 1*(abs(right_middle_difference)/total_change))
                 return -1*(abs(left_middle_difference)/total_change) + 1*(abs(right_middle_difference)/total_change)
 
             elif not self.polarity and min(left_middle_difference,right_middle_difference)<0:
