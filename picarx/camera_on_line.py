@@ -114,16 +114,17 @@ class CameraController(object):
 
 #Main Script
 with PiCamera() as camera:
-    logging.debug("Starting Camera Line Following, 2 Second delay before start")
-    logging.debug("Use VNC to see camera perspective")
-    logging.debug("By default BLUE lines are followed.")
+    print("Starting Camera Line Following, 2 Second delay before start")
+    print("Use VNC to see camera perspective")
+    print("By default BLUE lines are followed.")
     camera.resolution = (640,480)
     camera.framerate = 24
     rawCapture = PiRGBArray(camera, size=camera.resolution)  
+    time.sleep(2)
     sensor = CameraSensor()
     interpreter = CameraInterpreter()
     controller = CameraController()
-    time.sleep(2)
+
     controller.moveForward()
 
     for frame in camera.capture_continuous(rawCapture, format="bgr",use_video_port=True):# use_video_port=True
