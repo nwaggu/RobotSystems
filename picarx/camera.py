@@ -1,5 +1,6 @@
 import time
 from enum import Enum
+import logging
 try:
     from robot_hat import ADC
     from robot_hat import Grayscale_Module, Ultrasonic
@@ -17,27 +18,31 @@ import numpy as np
 import time
 import picarx_improved as px
 
-color_dict = {'red':[0,4],'orange':[5,18],'yellow':[22,37],'green':[42,85],'blue':[92,110],'purple':[115,165],'red_2':[165,180]}  #Here is the range of H in the HSV color space represented by the color
-kernel_5 = np.ones((5,5),np.uint8) #Define a 5×5 convolution kernel with element values of all 1.
+
+
 
 
 class CameraSensor(object):
     
+    def __init__(self, line_color='blue'):
+        
+        self.color_dict = {'red':[0,4],'orange':[5,18],'yellow':[22,37],'green':[42,85],'blue':[92,110],'purple':[115,165],'red_2':[165,180]}  #Here is the range of H in the HSV color space represented by the color
+        self.kernel_5 = np.ones((5,5),np.uint8) #Define a 5×5 convolution kernel with element values of all 1.
+        self.line_color= line_color
 
-
-    def color_detect(img,color_name='blue'):
+    def read(self, img):
 
         # The blue range will be different under different lighting conditions and can be adjusted flexibly.  H: chroma, S: saturation v: lightness
         resize_img = cv2.resize(img, (160,120), interpolation=cv2.INTER_LINEAR)  # In order to reduce the amount of calculation, the size of the picture is reduced to (160,120)
         hsv = cv2.cvtColor(resize_img, cv2.COLOR_BGR2HSV)              # Convert from BGR to HSV
-        color_type = color_name
+        color_type = self.line_color
         
-        mask = cv2.inRange(hsv,np.array([min(color_dict[color_type]), 60, 60]), np.array([max(color_dict[color_type]), 255, 255]) )           # inRange()：Make the ones between lower/upper white, and the rest black
+        mask = cv2.inRange(hsv,np.array([min(self.color_dict[color_type]), 60, 60]), np.array([max(self.color_dict[color_type]), 255, 255]) )           # inRange()：Make the ones between lower/upper white, and the rest black
         if color_type == 'red':
-                mask_2 = cv2.inRange(hsv, (color_dict['red_2'][0],0,0), (color_dict['red_2'][1],255,255)) 
+                mask_2 = cv2.inRange(hsv, (self.color_dict['red_2'][0],0,0), (self.color_dict['red_2'][1],255,255)) 
                 mask = cv2.bitwise_or(mask, mask_2)
 
-        morphologyEx_img = cv2.morphologyEx(mask, cv2.MORPH_OPEN, kernel_5,iterations=1)              # Perform an open operation on the image 
+        morphologyEx_img = cv2.morphologyEx(mask, cv2.MORPH_OPEN, self.kernel_5,iterations=1)              # Perform an open operation on the image 
 
         # Find the contour in morphologyEx_img, and the contours are arranged according to the area from small to large.
         _tuple = cv2.findContours(morphologyEx_img,cv2.RETR_EXTERNAL,cv2.CHAIN_APPROX_SIMPLE)      
@@ -105,18 +110,19 @@ class CameraController(object):
 
 
 with PiCamera() as camera:
-    print("Starting Line Following with Camera")
+    logging.debug("Starting Camera Line Following")
     camera.resolution = (640,480)
     camera.framerate = 24
     rawCapture = PiRGBArray(camera, size=camera.resolution)  
     time.sleep(2)
+    sensor = CameraSensor()
     interpreter = CameraInterpreter()
     controller = CameraController()
     controller.moveForward()
 
     for frame in camera.capture_continuous(rawCapture, format="bgr",use_video_port=True):# use_video_port=True
         img = frame.array
-        controller.steer(interpreter.ouputPosition(CameraSensor.color_detect(img)))
+        controller.steer(interpreter.ouputPosition(sensor.read()))
         #CameraSensor.color_detect(img,'blue')  # Color detection function
 
         cv2.imshow("video", img)    # OpenCV image show
