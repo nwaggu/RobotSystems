@@ -79,9 +79,10 @@ def steerOnLine():
     sensors = PicarxSensor()
     interpreter = Interpreter(initial_greyscale=sensors.read_greyscale_data()) 
     controller = Controller()
+    controller.moveForward()
     while True:
-        controller.steer(interpreter.react(sensors.read_greyscale_data()))
-        controller.moveForward()
+        #controller.steer(interpreter.react(sensors.read_greyscale_data()))
+        
 
 if __name__=='__main__':
     try:
