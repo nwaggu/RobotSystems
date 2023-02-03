@@ -99,7 +99,7 @@ class CameraController(object):
         #Setup car to follow line
         self.car = px.Picarx()
         self.car.set_camera_servo1_angle(0)
-        self.car.set_camera_servo2_angle(-30)
+        self.car.set_camera_servo2_angle(-10)
         self.car.set_dir_servo_angle(0)
     
     def steer(self, scaling):
@@ -117,7 +117,7 @@ with PiCamera() as camera:
     print("Starting Camera Line Following, 2 Second delay before start")
     print("Use VNC to see camera perspective")
     print("By default BLUE lines are followed.")
-    print("NOTE: This script is sensitive to lower battery")
+    print("NOTE: This script is sensitive to low battery")
     camera.resolution = (640,480)
     camera.framerate = 24
     rawCapture = PiRGBArray(camera, size=camera.resolution)  
