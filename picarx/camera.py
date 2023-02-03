@@ -83,6 +83,7 @@ class CameraInterpreter(object):
                 return 1*(640-midpoint_x)/320
             else:
                 return -1*(640+midpoint_x)/320
+        return 0
 
 
 class CameraController(object):
