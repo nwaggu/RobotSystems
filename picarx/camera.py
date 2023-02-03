@@ -36,19 +36,43 @@ class CameraSensor(object):
         color_area_num = len(contours) # Count the number of contours
 
         if color_area_num > 0: 
-            for i in contours:    # Traverse all contours
-                x,y,w,h = cv2.boundingRect(i)      # Decompose the contour into the coordinates of the upper left corner and the width and height of the recognition object
+            i = contours[0]    # Traverse all contours
+            x,y,w,h = cv2.boundingRect(i)      # Decompose the contour into the coordinates of the upper left corner and the width and height of the recognition object
 
                 # Draw a rectangle on the image (picture, upper left corner coordinate, lower right corner coordinate, color, line width)
-                if w >= 8 and h >= 8: # Because the picture is reduced to a quarter of the original size, if you want to draw a rectangle on the original picture to circle the target, you have to multiply x, y, w, h by 4.
-                    x = x * 4
-                    y = y * 4 
-                    w = w * 4
-                    h = h * 4
-                    print(x,y)
-                    cv2.rectangle(img,(x,y),(x+w,y+h),(0,255,0),2)  # Draw a rectangular frame
-                    cv2.putText(img,color_type,(x,y), cv2.FONT_HERSHEY_SIMPLEX, 1,(0,0,255),2)# Add character description
+            if w >= 8 and h >= 8: # Because the picture is reduced to a quarter of the original size, if you want to draw a rectangle on the original picture to circle the target, you have to multiply x, y, w, h by 4.
+                x = x * 4
+                y = y * 4 
+                w = w * 4
+                h = h * 4
+                print(x,y)
+                cv2.rectangle(img,(x,y),(x+w,y+h),(0,255,0),2)  # Draw a rectangular frame
+                cv2.putText(img,color_type,(x,y), cv2.FONT_HERSHEY_SIMPLEX, 1,(0,0,255),2)# Add character description
         else:
             print("No color detected.")
 
         return img,mask,morphologyEx_img
+
+with PiCamera() as camera:
+    print("start color detect")
+    camera.resolution = (640,480)
+    camera.framerate = 24
+    rawCapture = PiRGBArray(camera, size=camera.resolution)  
+    time.sleep(2)
+
+    for frame in camera.capture_continuous(rawCapture, format="bgr",use_video_port=True):# use_video_port=True
+        img = frame.array
+        img,img_2,img_3 =  color_detect(img,'blue')  # Color detection function
+        cv2.imshow("video", img)    # OpenCV image show
+        cv2.imshow("mask", img_2)    # OpenCV image show
+        cv2.imshow("morphologyEx_img", img_3)    # OpenCV image show
+        rawCapture.truncate(0)   # Release cache
+    
+        k = cv2.waitKey(1) & 0xFF
+        # 27 is the ESC key, which means that if you press the ESC key to exit
+        if k == 27:
+            break
+
+    print('quit ...') 
+    cv2.destroyAllWindows()
+    camera.close()  
