@@ -67,7 +67,8 @@ class CameraSensor(object):
                 h = h * 4
                 cv2.rectangle(img,(x,y),(x+w,y+h),(0,255,0),2)  # Draw a rectangular frame
                 cv2.putText(img,color_type,(x,y), cv2.FONT_HERSHEY_SIMPLEX, 1,(0,0,255),2)# Add character description
-                return img, (x,y,w,h)
+                coords = (x,y,w,h)
+                return img, coords
 
         return (0,0,0,0)
 
@@ -119,23 +120,24 @@ with PiCamera() as camera:
     print("Starting Camera Line Following, 2 Second delay before start")
     print("Use VNC to see camera perspective")
     print("By default BLUE lines are followed.")
-    print("NOTE: This script is sensitive to low battery")
     camera.resolution = (640,480)
     camera.framerate = 24
     rawCapture = PiRGBArray(camera, size=camera.resolution)  
     time.sleep(2)
+    #Setup classes
     sensor = CameraSensor()
     interpreter = CameraInterpreter()
     controller = CameraController()
-
+    #Issue forward command continuously
     controller.moveForward()
-
+    #Repeat for every frame
     for frame in camera.capture_continuous(rawCapture, format="bgr",use_video_port=True):# use_video_port=True
         img = frame.array
+        #Get sensor/camera output data
         new_img, sensorOutput = sensor.read(img)
-        controller.steer(interpreter.ouputPosition(sensor.read(img)))
-        #CameraSensor.color_detect(img,'blue')  # Color detection function
-
+        #Output a control to steer
+        controller.steer(interpreter.ouputPosition(sensorOutput))
+        #Show what car is seeing
         cv2.imshow("video", new_img)    # OpenCV image show
         rawCapture.truncate(0)   # Release cache
     
