@@ -99,9 +99,7 @@ class CameraController(object):
         #Setup car to follow line
         self.car = px.Picarx()
         self.car.set_camera_servo1_angle(0)
-        time.sleep(0.5)
-        self.car.set_camera_servo1_angle(30)
-        time.sleep(0.5)
+        self.car.set_camera_servo2_angle(30)
         self.car.set_dir_servo_angle(0)
     
     def steer(self, scaling):
