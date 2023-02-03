@@ -82,6 +82,7 @@ def color_detect(img,color_name):
                 y = y * 4 
                 w = w * 4
                 h = h * 4
+                print(x,y)
                 cv2.rectangle(img,(x,y),(x+w,y+h),(0,255,0),2)  # Draw a rectangular frame
                 cv2.putText(img,color_type,(x,y), cv2.FONT_HERSHEY_SIMPLEX, 1,(0,0,255),2)# Add character description
 
