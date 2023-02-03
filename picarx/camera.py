@@ -1,15 +1,29 @@
+import time
+from enum import Enum
+try:
+    from robot_hat import ADC
+    from robot_hat import Grayscale_Module, Ultrasonic
+    from robot_hat.utils import reset_mcu
+    reset_mcu()
+    time.sleep (0.01)
+except ImportError:
+    print ("This computer does not appear to be a PiCar -X system (robot_hat is not present). Shadowing hardware calls with substitute functions ")
+    from sim_robot_hat import *
 
 import cv2
 from picamera.array import PiRGBArray
 from picamera import PiCamera
 import numpy as np
 import time
+import picarx_improved as px
 
 color_dict = {'red':[0,4],'orange':[5,18],'yellow':[22,37],'green':[42,85],'blue':[92,110],'purple':[115,165],'red_2':[165,180]}  #Here is the range of H in the HSV color space represented by the color
 kernel_5 = np.ones((5,5),np.uint8) #Define a 5×5 convolution kernel with element values of all 1.
 
 
 class CameraSensor(object):
+    
+
 
     def color_detect(img,color_name='blue'):
 
@@ -35,6 +49,7 @@ class CameraSensor(object):
         
         color_area_num = len(contours) # Count the number of contours
 
+        #Get position of detected contour on map
         if color_area_num > 0: 
             i = contours[0]    # Traverse all contours
             x,y,w,h = cv2.boundingRect(i)      # Decompose the contour into the coordinates of the upper left corner and the width and height of the recognition object
@@ -45,27 +60,64 @@ class CameraSensor(object):
                 y = y * 4 
                 w = w * 4
                 h = h * 4
-                print(x,y)
-                cv2.rectangle(img,(x,y),(x+w,y+h),(0,255,0),2)  # Draw a rectangular frame
-                cv2.putText(img,color_type,(x,y), cv2.FONT_HERSHEY_SIMPLEX, 1,(0,0,255),2)# Add character description
-        else:
-            print("No color detected.")
+                return (x,y,w,h)
 
-        return img,mask,morphologyEx_img
+        return (0,0,0,0)
+
+class CameraInterpreter(object):
+    def __init__(self, sensitivity):
+        self.current_center = (0,0,0,0)
+        self.sensitivity = sensitivity
+    
+    def ouputPosition(self, sensor_data):
+        if sensor_data == (0,0,0,0):
+            print("Line not detected")
+            return 0
+        #Add the x distance plus half the mapped rectangle's width
+        midpoint_x = sensor_data[0] + sensor_data[2]/2
+        midpoint_y = sensor_data[1] + sensor_data[3]/2 
+        edge_one = 320-20
+        edge_two = 320+20
+        if not edge_one <= midpoint_x <= edge_two:
+            if midpoint_x >= 320:
+                return 1*(640-midpoint_x)/320
+            else:
+                return -1*(640+midpoint_x)/320
+
+
+class CameraController(object):
+    def __init__(self, scaling=0, angle=35):
+        self.scaling = scaling
+        self.angle = angle
+        self.car = px.Picarx()
+    
+    def steer(self, scaling):
+        self.scaling = scaling
+        directed_angle = self.scaling*self.angle
+        self.car.set_dir_servo_angle(directed_angle)
+        return directed_angle
+
+    def moveForward(self): 
+        self.car.forward(25)
+
+
+
 
 with PiCamera() as camera:
-    print("start color detect")
+    print("Starting Line Following with Camera")
     camera.resolution = (640,480)
     camera.framerate = 24
     rawCapture = PiRGBArray(camera, size=camera.resolution)  
     time.sleep(2)
+    interpreter = CameraInterpreter()
+    controller = CameraController()
 
     for frame in camera.capture_continuous(rawCapture, format="bgr",use_video_port=True):# use_video_port=True
         img = frame.array
-        img,img_2,img_3 =  CameraSensor.color_detect(img,'blue')  # Color detection function
+        controller.steer(interpreter.ouputPosition(CameraSensor.color_detect(img)))
+        #CameraSensor.color_detect(img,'blue')  # Color detection function
+
         cv2.imshow("video", img)    # OpenCV image show
-        cv2.imshow("mask", img_2)    # OpenCV image show
-        cv2.imshow("morphologyEx_img", img_3)    # OpenCV image show
         rawCapture.truncate(0)   # Release cache
     
         k = cv2.waitKey(1) & 0xFF
