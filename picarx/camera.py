@@ -96,6 +96,7 @@ class CameraController(object):
         self.scaling = scaling
         self.angle = angle
         self.car = px.Picarx()
+        self.car.set_camera_servo1_angle(30)
     
     def steer(self, scaling):
         self.scaling = scaling*2
