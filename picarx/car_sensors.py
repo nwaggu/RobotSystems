@@ -57,6 +57,9 @@ class Interpreter(object):
             print("No Edge detected")
         return 0
 
+  
+
+
 class Controller(object):
     def __init__(self, scaling=0, angle=35):
         self.scaling = scaling
@@ -69,6 +72,8 @@ class Controller(object):
         self.car.set_dir_servo_angle(directed_angle)
         return directed_angle
 
+    def moveForward(self):
+        self.car.forward(25)
 
 def steerOnLine():
     sensors = PicarxSensor()
@@ -76,6 +81,7 @@ def steerOnLine():
     controller = Controller()
     while True:
         controller.steer(interpreter.react(sensors.read_greyscale_data()))
+        controller.moveForward()
 
 if __name__=='__main__':
     try:
