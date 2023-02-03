@@ -65,7 +65,9 @@ class CameraSensor(object):
                 y = y * 4 
                 w = w * 4
                 h = h * 4
-                return (x,y,w,h)
+                cv2.rectangle(img,(x,y),(x+w,y+h),(0,255,0),2)  # Draw a rectangular frame
+                cv2.putText(img,color_type,(x,y), cv2.FONT_HERSHEY_SIMPLEX, 1,(0,0,255),2)# Add character description
+                return img, (x,y,w,h)
 
         return (0,0,0,0)
 
@@ -130,10 +132,11 @@ with PiCamera() as camera:
 
     for frame in camera.capture_continuous(rawCapture, format="bgr",use_video_port=True):# use_video_port=True
         img = frame.array
+        new_img, sensorOutput = sensor.read(img)
         controller.steer(interpreter.ouputPosition(sensor.read(img)))
         #CameraSensor.color_detect(img,'blue')  # Color detection function
 
-        cv2.imshow("video", img)    # OpenCV image show
+        cv2.imshow("video", new_img)    # OpenCV image show
         rawCapture.truncate(0)   # Release cache
     
         k = cv2.waitKey(1) & 0xFF
