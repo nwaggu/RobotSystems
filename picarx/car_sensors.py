@@ -32,7 +32,7 @@ class PicarxSensor(object):
 
 class Interpreter(object):
     #Sensitivity, true = darker, false = lighter
-    def __init__(self, sensitivity=500, polarity=True, initial_greyscale=[1500,1500,1500]):
+    def __init__(self, sensitivity=200, polarity=True, initial_greyscale=[1500,1500,1500]):
         self.sensitivity = sensitivity
         self.polarity = polarity
         self.greyscale_data = initial_greyscale
@@ -45,6 +45,7 @@ class Interpreter(object):
         difference = abs(left_middle_difference - right_middle_difference)
         total_change = abs(left_middle_difference)+abs(right_middle_difference)
         #Check if there is an edge
+        print(difference)
         if (difference >= self.sensitivity):
             print("Edge detected")
                 
