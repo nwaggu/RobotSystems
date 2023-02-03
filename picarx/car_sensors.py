@@ -78,5 +78,8 @@ def steerOnLine():
         controller.steer(interpreter.react(sensors.read_greyscale_data()))
 
 if __name__=='__main__':
-    steerOnLine()
+    try:
+        steerOnLine()
+    except KeyboardInterrupt:
+        print("Ended")
         
