@@ -65,7 +65,7 @@ class CameraSensor(object):
         return (0,0,0,0)
 
 class CameraInterpreter(object):
-    def __init__(self, sensitivity=20):
+    def __init__(self, sensitivity=40):
         self.current_center = (0,0,0,0)
         self.sensitivity = sensitivity
     
@@ -80,9 +80,9 @@ class CameraInterpreter(object):
         edge_two = 320+self.sensitivity
         if not edge_one <= midpoint_x <= edge_two:
             if midpoint_x >= 320:
-                return 1*(640-midpoint_x)/320
+                return 1*(midpoint_x-320)/320
             else:
-                return -1*(640+midpoint_x)/320
+                return -1*(320-midpoint_x)/320
         return 0
 
 
