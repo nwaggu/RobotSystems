@@ -65,7 +65,7 @@ class CameraSensor(object):
         return (0,0,0,0)
 
 class CameraInterpreter(object):
-    def __init__(self, sensitivity=40):
+    def __init__(self, sensitivity=20):
         self.current_center = (0,0,0,0)
         self.sensitivity = sensitivity
     
@@ -93,7 +93,7 @@ class CameraController(object):
         self.car = px.Picarx()
     
     def steer(self, scaling):
-        self.scaling = scaling
+        self.scaling = scaling*2
         directed_angle = self.scaling*self.angle
         self.car.set_dir_servo_angle(directed_angle)
         return directed_angle
@@ -112,6 +112,7 @@ with PiCamera() as camera:
     time.sleep(2)
     interpreter = CameraInterpreter()
     controller = CameraController()
+    controller.moveForward()
 
     for frame in camera.capture_continuous(rawCapture, format="bgr",use_video_port=True):# use_video_port=True
         img = frame.array
