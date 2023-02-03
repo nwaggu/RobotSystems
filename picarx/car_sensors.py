@@ -38,7 +38,7 @@ class Interpreter(object):
         self.greyscale_data = initial_greyscale
     
     def react(self, new_greyscale_data):
-        position = 0
+        self.greyscale_data = new_greyscale_data
         #Compare data between the readings
         left_middle_difference = self.greyscale_data[1] - self.greyscale_data[0]  
         right_middle_difference = self.greyscale_data[1] - self.greyscale_data[2]
