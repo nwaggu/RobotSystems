@@ -95,7 +95,10 @@ class CameraController(object):
     def __init__(self, scaling=0, angle=35):
         self.scaling = scaling
         self.angle = angle
+        
+        #Setup car to follow line
         self.car = px.Picarx()
+        self.car.set_camera_servo1_angle(0)
         self.car.set_camera_servo1_angle(30)
     
     def steer(self, scaling):
@@ -123,7 +126,7 @@ with PiCamera() as camera:
 
     for frame in camera.capture_continuous(rawCapture, format="bgr",use_video_port=True):# use_video_port=True
         img = frame.array
-        controller.steer(interpreter.ouputPosition(sensor.read()))
+        controller.steer(interpreter.ouputPosition(sensor.read(img)))
         #CameraSensor.color_detect(img,'blue')  # Color detection function
 
         cv2.imshow("video", img)    # OpenCV image show
