@@ -70,7 +70,7 @@ class CameraSensor(object):
                 coords = (x,y,w,h)
                 return img, coords
 
-        return (0,0,0,0)
+        return img, (0,0,0,0)
 
 class CameraInterpreter(object):
     def __init__(self, sensitivity=20):
