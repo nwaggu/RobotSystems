@@ -35,36 +35,27 @@ class Interpreter(object):
     def __init__(self, sensitivity=500, polarity=True, initial_greyscale=[1500,1500,1500]):
         self.sensitivity = sensitivity
         self.polarity = polarity
-        self.old_greyscale_data = initial_greyscale
+        self.greyscale_data = initial_greyscale
     
     def react(self, new_greyscale_data):
-        #Check for drop on sides
         position = 0
-        
-        drop_left = self.old_greyscale_data[0]-new_greyscale_data[0]
-        drop_middle = self.old_greyscale_data[1]-new_greyscale_data[1]
-        drop_right = self.old_greyscale_data[2]-new_greyscale_data[2]
-        if (drop_left >= self.sensitivity and self.polarity) or (drop_right >= self.sensitivity and self.polarity) or (drop_middle >= self.sensitivity and self.polarity):
-            print(drop_left)
-            print(drop_middle)
-            print(drop_right)
-            summed_drops = abs(drop_middle) + abs(drop_left)+ abs(drop_right)
-            if summed_drops != 0:
-                drops = [abs(drop_left)/summed_drops, abs(drop_middle)/summed_drops, abs(drop_right)/summed_drops]
-                #print(drops)
-                position = drops[0]*1 + drops[1]*0 + -1*drops[2]
-        #elif drop_left <= self.sensitivity or drop_right <= self.sensitivity or drop_middle <= self.sensitivity and not self.polarity:
-        #    summed_drops = abs(drop_middle) + abs(drop_left)+ abs(drop_right)
-        ##    if summed_drops != 0:
-        #        drops = [abs(drop_left)/summed_drops, abs(drop_middle)/summed_drops, abs(drop_right)/summed_drops]
-        #        print(drops)
-        #        position = drops[0]*1 + drops[1]*0 + -1*drops[2]
-        
-        self.old_greyscale_data = new_greyscale_data
-        print(new_greyscale_data)
-        print("position")
-        print(position)
-        return position
+        #Compare data between the readings
+        left_middle_difference = self.greyscale_data[1] - self.greyscale_data[0]  
+        right_middle_difference = self.greyscale_data[1] - self.greyscale_data[2]
+        difference = abs(left_middle_difference - right_middle_difference)
+        total_change = abs(left_middle_difference)+abs(right_middle_difference)
+        #Check if there is an edge
+        if (difference >= self.sensitivity):
+            print("Edge detected")
+                
+            if self.polarity and max(left_middle_difference,right_middle_difference) > 0:
+                return -1*(abs(left_middle_difference)/total_change) + 1*(abs(right_middle_difference)/total_change)
+
+            elif not self.polarity and min(left_middle_difference,right_middle_difference)<0:
+                return -1*(abs(left_middle_difference)/total_change) + 1*(abs(right_middle_difference)/total_change)
+        else:
+            print("No Edge detected")
+        return 0
 
 class Controller(object):
     def __init__(self, scaling=0, angle=35):
@@ -85,7 +76,6 @@ def steerOnLine():
     controller = Controller()
     while True:
         controller.steer(interpreter.react(sensors.read_greyscale_data()))
-        time.sleep(2)
 
 if __name__=='__main__':
     steerOnLine()
