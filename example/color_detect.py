@@ -96,7 +96,7 @@ with PiCamera() as camera:
 
     for frame in camera.capture_continuous(rawCapture, format="bgr",use_video_port=True):# use_video_port=True
         img = frame.array
-        img,img_2,img_3 =  color_detect(img,'red')  # Color detection function
+        img,img_2,img_3 =  color_detect(img,'blue')  # Color detection function
         cv2.imshow("video", img)    # OpenCV image show
         cv2.imshow("mask", img_2)    # OpenCV image show
         cv2.imshow("morphologyEx_img", img_3)    # OpenCV image show
