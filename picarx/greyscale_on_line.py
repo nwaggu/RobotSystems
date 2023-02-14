@@ -71,7 +71,7 @@ class Interpreter(object):
     def producer_consumer(self, sensor_bus:Bus, interpreter_bus:Bus, delay):
         while True:
             sensor_data = sensor_bus.read()
-            interpreter_bus.write(self.outputPosition(sensor_data)
+            interpreter_bus.write(self.outputPosition(sensor_data))
             time.sleep(delay)
 
     
