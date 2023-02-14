@@ -99,8 +99,9 @@ class Controller(object):
     
     def consumer(self, bus:Bus, delay):
         while True:
-            print(bus.read())
-            self.steer(bus.read())
+            interpret_data = bus.read()
+            #self.steer(interpret_data)
+            print(interpret_data)
             time.sleep(delay)
 
 
