@@ -91,7 +91,6 @@ class Controller(object):
         self.scaling = scaling
         #Scale turn angle by position
         directed_angle = self.scaling*self.angle
-        self.car.set_dir_servo_angle(directed_angle)
         return directed_angle
 
     def moveForward(self): 
@@ -100,13 +99,16 @@ class Controller(object):
     def consumer(self, bus:Bus, delay):
         while True:
             interpret_data = bus.read()
-            self.steer(interpret_data)
+            #self.steer(interpret_data)
             time.sleep(delay)
 
-
+def steer(car,bus:Bus):
+    while True:
+        interpret_data = bus.read()
+        car.set_dir_servo_angle(interpret_data*35)
 
 def steerOnLine(polarity):
-
+    car = px.Picarx()
     sensors = PicarxSensor()
     interpreter = Interpreter(polarity=polarity,initial_greyscale=sensors.read_greyscale_data()) 
     controller = Controller()
@@ -121,7 +123,7 @@ def steerOnLine(polarity):
     with concurrent.futures.ThreadPoolExecutor(max_workers =3) as executor:
             eSensor = executor.submit(sensors.producer,sensor_values_bus, sensor_delay)
             eInterpreter = executor.submit(interpreter.producer_consumer,sensor_values_bus,interpreter_bus,interpreter_delay)
-            eController = executor.submit(controller.consumer, interpreter_bus, controller_delay)
+            eController = executor.submit(steer, car, interpreter_bus)
     eSensor.result()
 
 
