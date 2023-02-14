@@ -99,7 +99,6 @@ class Controller(object):
     
     def consumer(self, bus:Bus, delay):
         while True:
-            self.moveForward()
             print(bus.read())
             self.steer(bus.read())
             time.sleep(delay)
@@ -122,7 +121,7 @@ def steerOnLine(polarity):
     with concurrent.futures.ThreadPoolExecutor(max_workers =3) as executor:
             eSensor = executor.submit(sensors.producer,sensor_values_bus, sensor_delay)
             eInterpreter = executor.submit(interpreter.producer_consumer,sensor_values_bus,interpreter_bus,interpreter_delay)
-            controller.consumer(interpreter_bus)
+            eController = executor.submit(controller.consumer, interpreter_bus, controller_delay)
     eSensor.result()
 
 
