@@ -70,6 +70,7 @@ class Interpreter(object):
 
     def producer_consumer(self, sensor_bus:Bus, interpreter_bus:Bus, delay):
         while True:
+            print(sensor_bus.read())
             interpreter_bus.write(self.outputPosition(sensor_bus.read()))
             time.sleep(delay)
 
