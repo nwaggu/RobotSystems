@@ -116,6 +116,8 @@ def steerOnLine(polarity):
 
 
     with concurrent.futures.ThreadPoolExecutor(max_workers =3) as executor:
+            sensors_values_bus = Bus(sensors.read_greyscale_data())
+            interpreter_bus = Bus(0) 
             eSensor = executor.submit(sensors.producer,sensor_values_bus, sensor_delay)
             eInterpreter = executor.submit(interpreter.producer_consumer,sensor_values_bus,interpreter_bus,interpreter_delay)
             eController = executor.submit(controller.consumer, interpreter_bus, controller_delay)
