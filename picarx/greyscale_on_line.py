@@ -69,9 +69,9 @@ class Interpreter(object):
             logging.debug("No edge detected")
         return 0
 
-    def producer_consumer(self, bus:Bus, delay):
+    def producer_consumer(self, sensor_bus:Bus, interpreter_bus:Bus, delay):
         while True:
-            bus.write(self.outputPosition(bus.read()))
+            interpreter_bus.write(self.outputPosition(sensor_bus.read()))
             print("PC")
             time.sleep(delay)
 
