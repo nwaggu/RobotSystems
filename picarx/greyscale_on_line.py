@@ -116,10 +116,12 @@ def steerOnLine(polarity):
 
 
     print("Am I crazy")
-    with concurrent.futures.ThreadPoolExecutor(max_workers =3) as executor:
-            eSensor = executor.submit(sensors.producer,sensor_values_bus, sensor_delay)
-            eInterpreter = executor.submit(interpreter.producer_consumer,sensor_values_bus,interpreter_bus,interpreter_delay)
-            eController = executor.submit(car.steer, interpreter_bus, controller_delay)
+    with concurrent.futures.ThreadPoolExecutor(max_workers =2) as executor:
+            eSensor = executor.map(sensors.producer,sensor_values_bus, sensor_delay)
+            eInterpreter = executor.map(interpreter.producer_consumer,sensor_values_bus,interpreter_bus,interpreter_delay)
+            eController = executor.map(car.steer, interpreter_bus, controller_delay)
+            if not eSensor.running() or not eInterpreter.running() or not eController.running:
+                print("something went wrong i guess")
 
     eSensor.result()
 
