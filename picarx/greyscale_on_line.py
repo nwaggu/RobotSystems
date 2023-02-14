@@ -82,13 +82,14 @@ class Controller(object):
         self.scaling = scaling
         self.angle = angle
         #Setup car
-        self.car = px.Picarx()
+        self.car = Picarx()
         self.car.set_dir_servo_angle(0)
     
     def steer(self, scaling):
         self.scaling = scaling
         #Scale turn angle by position
         directed_angle = self.scaling*self.angle
+        self.car.set_dir_servo_angle(directed_angle)
         return directed_angle
 
     def moveForward(self): 
@@ -105,7 +106,6 @@ class Controller(object):
 
 def steerOnLine(polarity):
     #Class and Delay Setups
-    car = Picarx()
     sensors = PicarxSensor()
     interpreter = Interpreter(polarity=polarity,initial_greyscale=sensors.read_greyscale_data()) 
     controller = Controller()
