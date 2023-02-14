@@ -34,6 +34,7 @@ class PicarxSensor(object):
     def producer(self, bus:Bus, delay):
         while True:
             bus.write(self.read_greyscale_data())
+            print("producder")
             time.sleep(delay)
 
 
@@ -71,6 +72,7 @@ class Interpreter(object):
     def producer_consumer(self, bus:Bus, delay):
         while True:
             bus.write(self.outputPosition(bus.read()))
+            print("PC")
             time.sleep(delay)
 
     
@@ -98,6 +100,7 @@ class Controller(object):
         while True:
             self.moveForward()
             self.steer(bus.read())
+            print("Consumer Check")
             time.sleep(delay)
 
 
