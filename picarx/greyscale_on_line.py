@@ -13,7 +13,7 @@ except ImportError:
     print ("This computer does not appear to be a PiCar -X system (robot_hat is not present). Shadowing hardware calls with substitute functions ")
     from sim_robot_hat import *
 
-import picarx_improved as px
+from picarx_improved import Picarx
 import logging
 from concurrency import Bus
 
@@ -84,7 +84,7 @@ class Controller(object):
         self.scaling = scaling
         self.angle = angle
         #Setup car
-        self.car = px.Picarx()
+        #self.car = px.Picarx()
         self.car.set_dir_servo_angle(0)
     
     def steer(self, scaling):
@@ -105,7 +105,7 @@ class Controller(object):
 
 
 def steerOnLine(polarity):
-    car = px.Picarx()
+    car = Picarx()
     sensors = PicarxSensor()
     interpreter = Interpreter(polarity=polarity,initial_greyscale=sensors.read_greyscale_data()) 
     controller = Controller()
