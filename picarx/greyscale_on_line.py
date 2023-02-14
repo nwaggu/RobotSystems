@@ -110,19 +110,16 @@ def steerOnLine(polarity):
     #controller = Controller()
     sensor_values_bus = Bus(sensors.read_greyscale_data())
     interpreter_bus = Bus(0) 
-    sensor_delay = 0.01
-    interpreter_delay = 0.01
-    controller_delay = 0.01
+    sensor_delay = 0.2
+    interpreter_delay = 0.2
+    controller_delay = 0.2
 
 
     print("Am I crazy")
-    with concurrent.futures.ThreadPoolExecutor(max_workers =2) as executor:
+    with concurrent.futures.ThreadPoolExecutor(max_workers =3) as executor:
             eSensor = executor.map(sensors.producer,sensor_values_bus, sensor_delay)
             eInterpreter = executor.map(interpreter.producer_consumer,sensor_values_bus,interpreter_bus,interpreter_delay)
             eController = executor.map(car.steer, interpreter_bus, controller_delay)
-            if not eSensor.running() or not eInterpreter.running() or not eController.running:
-                print("something went wrong i guess")
-
     eSensor.result()
 
 
