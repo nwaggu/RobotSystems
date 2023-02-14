@@ -110,9 +110,9 @@ def steerOnLine(polarity):
     controller = Controller()
     sensor_values_bus = Bus(sensors.read_greyscale_data())
     interpreter_bus = Bus(0) 
-    sensor_delay = 1
-    interpreter_delay = 1
-    controller_delay = 1
+    sensor_delay = 0.01
+    interpreter_delay = 0.01
+    controller_delay = 0.01
 
 
 
