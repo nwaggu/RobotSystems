@@ -102,10 +102,7 @@ class Controller(object):
             #self.steer(interpret_data)
             time.sleep(delay)
 
-def steer(car,bus:Bus):
-    while True:
-        interpret_data = bus.read()
-        car.set_dir_servo_angle(interpret_data*35)
+
 
 def steerOnLine(polarity):
     car = px.Picarx()
@@ -123,7 +120,7 @@ def steerOnLine(polarity):
     with concurrent.futures.ThreadPoolExecutor(max_workers =4) as executor:
             eSensor = executor.submit(sensors.producer,sensor_values_bus, sensor_delay)
             eInterpreter = executor.submit(interpreter.producer_consumer,sensor_values_bus,interpreter_bus,interpreter_delay)
-            #eController = executor.submit(steer, car, interpreter_bus)
+            eController = executor.submit(car.steer, interpreter_bus)
     print("Am I crazy")
     eSensor.result()
 

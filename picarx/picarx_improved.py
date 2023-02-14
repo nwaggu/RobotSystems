@@ -218,6 +218,12 @@ class Picarx(object):
     def get_line_status(self,gm_val_list):
         return str(self.grayscale.get_line_status(gm_val_list))
 
+    def steer(bus:Bus):
+        self.set_dir_servo_angle(0)
+        while True:
+            interpret_data = bus.read()
+            self.set_dir_servo_angle(interpret_data*35)
+
     def cleanup(self):
         self.stop()
 
