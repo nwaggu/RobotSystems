@@ -1,5 +1,7 @@
 import time
 from enum import Enum
+from concurrency import Bus
+
 try:
     from robot_hat import ADC
     from robot_hat import Grayscale_Module, Ultrasonic
@@ -9,11 +11,10 @@ try:
 except ImportError:
     print ("This computer does not appear to be a PiCar -X system (robot_hat is not present). Shadowing hardware calls with substitute functions ")
     from sim_robot_hat import *
-import os
-import atexit
-import math 
+
 import picarx_improved as px
 import logging
+from concurrency import Bus
 
 class PicarxSensor(object):
     def __init__(self, greyscale_pins:list = ['A0', 'A1', 'A2'], reference = 1500):
@@ -28,6 +29,13 @@ class PicarxSensor(object):
         output.append(self.chn_1.read())
         output.append(self.chn_2.read())
         return output
+
+    def producer(self, bus:Bus, delay):
+        while True:
+            bus.write(self.read_greyscale_data())
+            time.sleep(delay)
+
+
 
 
 class Interpreter(object):
@@ -59,6 +67,13 @@ class Interpreter(object):
             logging.debug("No edge detected")
         return 0
 
+    def producer_consumer(self, bus:Bus, delay):
+        while True:
+            bus.write(self.outputPosition(bus.read()))
+            time.sleep(delay)
+
+    
+
 
 class Controller(object):
     def __init__(self, scaling=0, angle=35):
@@ -77,15 +92,36 @@ class Controller(object):
 
     def moveForward(self): 
         self.car.forward(25)
+    
+    def consumer(self, bus:Bus, delay):
+        while True:
+            self.moveForward()
+            self.steer(bus.read())
+            time.sleep(delay)
+
+
 
 def steerOnLine(polarity):
+
     sensors = PicarxSensor()
     interpreter = Interpreter(polarity=polarity,initial_greyscale=sensors.read_greyscale_data()) 
     controller = Controller()
-    controller.car.set_dir_servo_angle(0)
-    controller.moveForward()
-    while True:
-        controller.steer(interpreter.outputPosition(sensors.read_greyscale_data()))
+    sensors_values_bus = Bus(sensors.read_greyscale_data())
+    interpreter_bus = Bus(0) 
+    sensor_delay = 1
+    interpreter_delay = 1
+    controller_delay = 1
+
+
+
+    with concurrent.futures.ThreadPoolExecutor(max_workers =3) as
+        executor:
+            eSensor = executor.submit(sensors.producer,sensor_values_bus, sensor_delay)
+            eInterpreter = executor.submit(interpreter.producer_consumer,sensor_values_bus,interpreter_bus,interpreter_delay)
+            eController = executor.submit(controller.consumer, interpreter_bus, controller_delay)
+    eSensor.result()
+
+
         
 
 #Script
