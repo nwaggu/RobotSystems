@@ -73,7 +73,7 @@ class Interpreter(object):
             sensor_data = sensor_bus.read()
             position = self.outputPosition(sensor_data)
             interpreter_bus.write(position)
-            print(sensor_data)
+            print(position)
             time.sleep(delay)
 
     
