@@ -222,8 +222,9 @@ class Picarx(object):
     def steer(bus:Bus, delay):
         self.set_dir_servo_angle(0)
         while True:
+
             interpret_data = bus.read()
-            print(interpret_data)
+            print("Does this while EXIST")
             self.set_dir_servo_angle(interpret_data*35)
             time.sleep(delay)
 
