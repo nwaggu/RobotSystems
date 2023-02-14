@@ -77,7 +77,7 @@ class Interpreter(object):
             time.sleep(delay)
 
     
-
+"""
 
 class Controller(object):
     def __init__(self, scaling=0, angle=35):
@@ -102,13 +102,13 @@ class Controller(object):
             #self.steer(interpret_data)
             time.sleep(delay)
 
-
+"""
 
 def steerOnLine(polarity):
     car = Picarx()
     sensors = PicarxSensor()
     interpreter = Interpreter(polarity=polarity,initial_greyscale=sensors.read_greyscale_data()) 
-    controller = Controller()
+    #controller = Controller()
     sensor_values_bus = Bus(sensors.read_greyscale_data())
     interpreter_bus = Bus(0) 
     sensor_delay = 0.01
