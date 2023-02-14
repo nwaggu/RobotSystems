@@ -13,6 +13,6 @@ class Bus():
     def read(self):
         with self.lock.gen_rlock():
             message = self.message
-            return message
+        return message
 
 
