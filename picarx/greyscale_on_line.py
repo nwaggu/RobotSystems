@@ -73,7 +73,6 @@ class Interpreter(object):
             sensor_data = sensor_bus.read()
             position = self.outputPosition(sensor_data)
             interpreter_bus.write(position)
-            print(position)
             time.sleep(delay)
 
     
@@ -120,7 +119,7 @@ def steerOnLine(polarity):
     with concurrent.futures.ThreadPoolExecutor(max_workers =4) as executor:
             eSensor = executor.submit(sensors.producer,sensor_values_bus, sensor_delay)
             eInterpreter = executor.submit(interpreter.producer_consumer,sensor_values_bus,interpreter_bus,interpreter_delay)
-            eController = executor.submit(car.steer, interpreter_bus)
+            eController = executor.submit(car.steer, interpreter_bus, controller_delay)
     print("Am I crazy")
     eSensor.result()
 
