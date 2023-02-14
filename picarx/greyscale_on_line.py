@@ -76,14 +76,13 @@ class Interpreter(object):
             time.sleep(delay)
 
     
-"""
 
 class Controller(object):
     def __init__(self, scaling=0, angle=35):
         self.scaling = scaling
         self.angle = angle
         #Setup car
-        #self.car = px.Picarx()
+        self.car = px.Picarx()
         self.car.set_dir_servo_angle(0)
     
     def steer(self, scaling):
@@ -96,30 +95,30 @@ class Controller(object):
         self.car.forward(25)
     
     def consumer(self, bus:Bus, delay):
+        self.moveForward()
         while True:
             interpret_data = bus.read()
-            #self.steer(interpret_data)
+            self.steer(interpret_data)
             time.sleep(delay)
 
-"""
+
 
 def steerOnLine(polarity):
+    #Class and Delay Setups
     car = Picarx()
     sensors = PicarxSensor()
     interpreter = Interpreter(polarity=polarity,initial_greyscale=sensors.read_greyscale_data()) 
-    #controller = Controller()
+    controller = Controller()
     sensor_values_bus = Bus(sensors.read_greyscale_data())
     interpreter_bus = Bus(0) 
     sensor_delay = 0.2
     interpreter_delay = 0.2
     controller_delay = 0.2
 
-
-    print("Am I crazy")
     with concurrent.futures.ThreadPoolExecutor(max_workers =3) as executor:
             eSensor = executor.submit(sensors.producer,sensor_values_bus, sensor_delay)
             eInterpreter = executor.submit(interpreter.producer_consumer,sensor_values_bus,interpreter_bus,interpreter_delay)
-            eController = executor.submit(car.steer, interpreter_bus, controller_delay)
+            eController = executor.submit(controller.consumer, interpreter_bus, controller_delay)
     eSensor.result()
 
 
