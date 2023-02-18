@@ -129,7 +129,6 @@ class CameraInterpreter(object):
         while True:
             sensor_data = sensor_bus.read()
             position = self.ouputPosition(sensor_data)
-            print(position)
             interpreter_bus.write(position)
             time.sleep(delay)
 
@@ -154,6 +153,7 @@ class CameraController(object):
         self.car.forward(25)
     
     def consumer(self, bus:Bus, delay):
+        self.moveForward()
         while True:
             interpret_data = bus.read()
             self.steer(interpret_data)
@@ -182,7 +182,6 @@ def cameraOnLine():
 if __name__=='__main__':
     try:
         logging.debug("Starting greyscale line following script")
-        choice = input("Type 1 for dark case, 0 for light case: ")
         cameraOnLine()
         
     except KeyboardInterrupt:
