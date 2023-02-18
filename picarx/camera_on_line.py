@@ -88,7 +88,6 @@ class CameraSensor(object):
                 img = frame.array
                 #Get sensor/camera output data
                 new_img, sensorOutput = self.read(img)
-                print(sensorOutput)
                 bus.write(sensorOutput)
                 #Show what car is seeing
                 cv2.imshow("video", new_img)    # OpenCV image show
@@ -98,6 +97,7 @@ class CameraSensor(object):
                 # 27 is the ESC key, which means that if you press the ESC key to exit
                 if k == 27:
                     break
+                time.sleep(delay)
             print('quit ...') 
             cv2.destroyAllWindows()
             camera.close()
