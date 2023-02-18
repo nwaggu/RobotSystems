@@ -17,6 +17,8 @@ from picamera import PiCamera
 import numpy as np
 import time
 from picarx_improved import Picarx
+from concurrency import Bus
+import concurrent.futures
 
 
 
@@ -71,6 +73,36 @@ class CameraSensor(object):
                 return img, coords
 
         return img, (0,0,0,0)
+    
+    def producer(self, bus:Bus, delay):
+        with PiCamera() as camera:
+            print("Starting Camera Line Following, 2 Second delay before start")
+            print("Use VNC to see camera perspective")
+            print("By default BLUE lines are followed.")
+            camera.resolution = (640,480)
+            camera.framerate = 24
+            rawCapture = PiRGBArray(camera, size=camera.resolution)  
+            time.sleep(2)
+            #Repeat for every frame
+            for frame in camera.capture_continuous(rawCapture, format="bgr",use_video_port=True):# use_video_port=True
+                img = frame.array
+                #Get sensor/camera output data
+                new_img, sensorOutput = self.read(img)
+                print(sensorOutput)
+                bus.write(sensorOutput)
+                #Show what car is seeing
+                cv2.imshow("video", new_img)    # OpenCV image show
+                rawCapture.truncate(0)   # Release cache
+            
+                k = cv2.waitKey(1) & 0xFF
+                # 27 is the ESC key, which means that if you press the ESC key to exit
+                if k == 27:
+                    break
+            print('quit ...') 
+            cv2.destroyAllWindows()
+            camera.close()
+            
+
 
 class CameraInterpreter(object):
     def __init__(self, sensitivity=20):
@@ -92,7 +124,13 @@ class CameraInterpreter(object):
             else:
                 return -1*(320-midpoint_x)/320
         return 0
-
+    
+    def producer_consumer(self, sensor_bus:Bus, interpreter_bus:Bus, delay):
+        while True:
+            sensor_data = sensor_bus.read()
+            position = self.outputPosition(sensor_data)
+            interpreter_bus.write(position)
+            time.sleep(delay)
 
 class CameraController(object):
     def __init__(self, scaling=0, angle=35):
@@ -100,7 +138,7 @@ class CameraController(object):
         self.angle = angle
         
         #Setup car to follow line
-        self.car = px.Picarx()
+        self.car = Picarx()
         self.car.set_camera_servo1_angle(0)
         self.car.set_camera_servo2_angle(-20)
         self.car.set_dir_servo_angle(0)
@@ -113,39 +151,37 @@ class CameraController(object):
 
     def moveForward(self): 
         self.car.forward(25)
+    
+    def consumer(self, bus:Bus, delay):
+        self.moveForward()
+        while True:
+            interpret_data = bus.read()
+            self.steer(interpret_data)
+            time.sleep(delay)
 
-
-#Main Script
-with PiCamera() as camera:
-    print("Starting Camera Line Following, 2 Second delay before start")
-    print("Use VNC to see camera perspective")
-    print("By default BLUE lines are followed.")
-    camera.resolution = (640,480)
-    camera.framerate = 24
-    rawCapture = PiRGBArray(camera, size=camera.resolution)  
-    time.sleep(2)
-    #Setup classes
+def cameraOnLine():
+    #Class and Delay Setups
     sensor = CameraSensor()
     interpreter = CameraInterpreter()
     controller = CameraController()
-    #Issue forward command continuously
-    controller.moveForward()
-    #Repeat for every frame
-    for frame in camera.capture_continuous(rawCapture, format="bgr",use_video_port=True):# use_video_port=True
-        img = frame.array
-        #Get sensor/camera output data
-        new_img, sensorOutput = sensor.read(img)
-        #Output a control to steer
-        controller.steer(interpreter.ouputPosition(sensorOutput))
-        #Show what car is seeing
-        cv2.imshow("video", new_img)    # OpenCV image show
-        rawCapture.truncate(0)   # Release cache
-    
-        k = cv2.waitKey(1) & 0xFF
-        # 27 is the ESC key, which means that if you press the ESC key to exit
-        if k == 27:
-            break
+    sensor_values_bus = Bus((0,0,0,0))
+    interpreter_bus = Bus(0) 
+    sensor_delay = 0.2
+    interpreter_delay = 0.2
+    controller_delay = 0.2
 
-    print('quit ...') 
-    cv2.destroyAllWindows()
-    camera.close()  
+    with concurrent.futures.ThreadPoolExecutor(max_workers =3) as executor:
+            eSensor = executor.submit(sensor.producer,sensor_values_bus, sensor_delay)
+            eInterpreter = executor.submit(interpreter.producer_consumer,sensor_values_bus,interpreter_bus,interpreter_delay)
+            eController = executor.submit(controller.consumer, interpreter_bus, controller_delay)
+    eSensor.result()
+
+#Main Script
+if __name__=='__main__':
+    try:
+        logging.debug("Starting greyscale line following script")
+        choice = input("Type 1 for dark case, 0 for light case: ")
+        cameraOnLine()
+        
+    except KeyboardInterrupt:
+        logging.debug("Forced to end")  
