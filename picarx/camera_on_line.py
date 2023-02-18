@@ -88,7 +88,6 @@ class CameraSensor(object):
                 img = frame.array
                 #Get sensor/camera output data
                 new_img, sensorOutput = self.read(img)
-                print(sensorOutput)
                 bus.write(sensorOutput)
                 #Show what car is seeing
                 cv2.imshow("video", new_img)    # OpenCV image show
@@ -156,6 +155,7 @@ class CameraController(object):
         self.moveForward()
         while True:
             interpret_data = bus.read()
+            print(interpret_data)
             self.steer(interpret_data)
             time.sleep(delay)
 
@@ -175,6 +175,8 @@ def cameraOnLine():
             eInterpreter = executor.submit(interpreter.producer_consumer,sensor_values_bus,interpreter_bus,interpreter_delay)
             eController = executor.submit(controller.consumer, interpreter_bus, controller_delay)
     eSensor.result()
+    eInterpreter.result()
+    eController.result()
 
 #Main Script
 if __name__=='__main__':
