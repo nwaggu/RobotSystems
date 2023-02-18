@@ -126,10 +126,10 @@ class CameraInterpreter(object):
         return 0
     
     def producer_consumer(self, sensor_bus:Bus, interpreter_bus:Bus, delay):
-        time.sleep(3)
         while True:
             sensor_data = sensor_bus.read()
-            print(sensor_bus)
+            position = self.ouputPosition(sensor_data)
+            print(position)
             interpreter_bus.write(position)
             time.sleep(delay)
 
@@ -154,8 +154,6 @@ class CameraController(object):
         self.car.forward(25)
     
     def consumer(self, bus:Bus, delay):
-        #self.moveForward()
-        time.sleep(3)
         while True:
             interpret_data = bus.read()
             self.steer(interpret_data)
