@@ -152,7 +152,7 @@ class CameraController(object):
         self.car.forward(25)
     
     def consumer(self, bus:Bus, delay):
-        self.moveForward()
+        #self.moveForward()
         while True:
             interpret_data = bus.read()
             print(interpret_data)
