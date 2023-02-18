@@ -88,6 +88,7 @@ class CameraSensor(object):
                 img = frame.array
                 #Get sensor/camera output data
                 new_img, sensorOutput = self.read(img)
+                print(sensorOutput)
                 bus.write(sensorOutput)
                 #Show what car is seeing
                 cv2.imshow("video", new_img)    # OpenCV image show
