@@ -18,7 +18,6 @@ class UltraSonicSensor():
         self.timeout = timeout
     
     def _read(self):
-        print("start read")
         self.trig.low()
         time.sleep(0.01)
         self.trig.high()
@@ -40,6 +39,7 @@ class UltraSonicSensor():
         return cm
 
     def read(self, times=10):
+        print("I read")
         for i in range(times):
             a = self._read()
             if a != -1:
@@ -53,7 +53,9 @@ class UltraInterpreter():
     
     def determineGo(self, distance):
         if distance <= self.stopping_distance:
+            print("False!")
             return False 
+        print("Impossible")
         return True
 
 
@@ -63,8 +65,10 @@ class UltraController():
     
     def drive(self, go):
         if go:
+            print("Not here")
             self.car.forward(30)
         else:
+            print("You Are here")
             self.car.stop()
 
 
