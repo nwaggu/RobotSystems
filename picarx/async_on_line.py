@@ -18,6 +18,7 @@ class UltraSonicSensor():
         self.timeout = timeout
     
     def _read(self):
+        print("start read")
         self.trig.low()
         time.sleep(0.01)
         self.trig.high()
@@ -53,4 +54,4 @@ class UltraSonicSensor():
 if __name__=='__main__':
     ultra = UltraSonicSensor()
     while True:
-        print(ultra.read())
+        ultra.read()
