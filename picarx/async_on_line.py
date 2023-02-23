@@ -13,8 +13,8 @@ import picarx_improved as px
     
 class UltraSonicSensor():
     def __init__(self,ultrasonic_pins:list=['D2','D3'], timeout=0.02):
-        tring, echo= ultrasonic_pins        
-        self.trig = Pin(tring)
+        trig, echo= ultrasonic_pins        
+        self.trig = Pin(trig)
         self.echo = Pin(echo)
         self.timeout = timeout
     
@@ -28,6 +28,7 @@ class UltraSonicSensor():
         pulse_end = 0
         pulse_start = 0
         timeout_start = time.time()
+        print(self.echo)
         while self.echo.value()==0:
             pulse_start = time.time()
             if pulse_start - timeout_start > self.timeout:
@@ -37,7 +38,6 @@ class UltraSonicSensor():
             if pulse_end - timeout_start > self.timeout:
                 print("returned negative 1")
                 return -1
-        print("left while")
         during = pulse_end - pulse_start
         cm = round(during * 340 / 2 * 100, 2)
         print("cm")
@@ -51,6 +51,7 @@ class UltraSonicSensor():
         return -1
 
 if __name__=='__main__':
-    #car = px.Picarx
-    #while True:
+    ultra = UltraSonicSensor()
+    while True:
+        print(ultra.read())
         
