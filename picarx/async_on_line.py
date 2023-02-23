@@ -28,7 +28,7 @@ class UltraSonicSensor():
         pulse_end = 0
         pulse_start = 0
         timeout_start = time.time()
-        print(self.echo.value())
+        print(self.ec)
         while self.echo.value()==0:
             pulse_start = time.time()
             if pulse_start - timeout_start > self.timeout:
@@ -51,7 +51,8 @@ class UltraSonicSensor():
         return -1
 
 if __name__=='__main__':
-    ultra = UltraSonicSensor()
+    car = px.Picarx
     while True:
-        print(ultra.read())
+        print(car.get_grayscale_data())
+        print(car.get_distance())
         
