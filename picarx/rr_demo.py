@@ -87,7 +87,7 @@ steeringControl = rr.Consumer(
 # bus when it triggers
 terminationTimer = rr.Timer(
     bTerminate,  # Output data bus
-    3,  # Duration
+    60,  # Duration
     0.01,  # Delay between checking for termination time
     bTerminate,  # Bus to check for termination signal
     "Termination timer")  # Name of this timer
