@@ -8,6 +8,7 @@ try:
 except ImportError:
     print ("This computer does not appear to be a PiCar -X system (robot_hat is not present). Shadowing hardware calls with substitute functions ")
     from sim_robot_hat import *
+import picarx_improved as px
     
     
 class UltraSonicSensor():
@@ -50,6 +51,6 @@ class UltraSonicSensor():
         return -1
 
 if __name__=='__main__':
-    ultra = UltraSonicSensor()
-    while True:
-        ultra.read()
+    #car = px.Picarx
+    #while True:
+        

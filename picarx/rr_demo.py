@@ -23,7 +23,7 @@ import rossros as rr
 import logging
 import time
 import math
-
+from greyscale_on_line import PicarxSensor, Interpreter, Controller
 # logging.getLogger().setLevel(logging.DEBUG)
 logging.getLogger().setLevel(logging.INFO)
 
@@ -31,40 +31,7 @@ logging.getLogger().setLevel(logging.INFO)
 
 
 
-class UltraSonicSensor():
-    def __init__(self,ultrasonic_pins:list=['D2','D3'], timeout=0.02):
-        tring, echo= ultrasonic_pins
-        self.tring = tring
-        self.echo = echo
-        self.timeout = timeout
-    
-    def _read(self):
-        self.trig.low()
-        time.sleep(0.01)
-        self.trig.high()
-        time.sleep(0.00001)
-        self.trig.low()
-        pulse_end = 0
-        pulse_start = 0
-        timeout_start = time.time()
-        while self.echo.value()==0:
-            pulse_start = time.time()
-            if pulse_start - timeout_start > self.timeout:
-                return -1
-        while self.echo.value()==1:
-            pulse_end = time.time()
-            if pulse_end - timeout_start > self.timeout:
-                return -1
-        during = pulse_end - pulse_start
-        cm = round(during * 340 / 2 * 100, 2)
-        return cm
 
-    def read(self, times=10):
-        for i in range(times):
-            a = self._read()
-            if a != -1:
-                return a
-        return -1
     
 
 
@@ -72,64 +39,51 @@ class UltraSonicSensor():
 """ First Part: Signal generation and processing functions """
 
 # Create two signal-generation functions
-
-
-# This function outputs a square wave that steps between +/- 1
-# every second
-def square():
-    return (2 * math.floor(time.time() % 2)) - 1
-
-
-# This function counts up from zero to 1 every second
-def sawtooth():
-    return time.time() % 1  # "%" is the modulus operator
-
-
-# This function multiplies two inputs together
-def mult(a, b):
-    return a * b
-
+greyscale_sensor = PicarxSensor()
+greyscale_interpreter = Interpreter()
+greyscale_control = Controller() 
 
 """ Second Part: Create buses for passing data """
 
 # Initiate data and termination busses
-bSquare = rr.Bus(square(), "Square wave bus")
-bSawtooth = rr.Bus(sawtooth(), "Sawtooth wave Bus")
-bMultiplied = rr.Bus(sawtooth() * square(), "Multiplied wave bus")
+greyscale_bus = rr.Bus(greyscale_sensor.read_greyscale_data(),"Greyscale Bus")
+steer_bus = rr.Bus(0, "Steer Bus")
 bTerminate = rr.Bus(0, "Termination Bus")
 
 """ Third Part: Wrap signal generation and processing functions into RossROS objects """
 
 # Wrap the square wave signal generator into a producer
-readSquare = rr.Producer(
-    square,  # function that will generate data
-    bSquare,  # output data bus
+readGreyScale = rr.Producer(
+    greyscale_sensor.read_greyscale_data,  # function that will generate data
+    greyscale_bus,  # output data bus
     0.05,  # delay between data generation cycles
     bTerminate,  # bus to watch for termination signal
-    "Read square wave signal")
+    "Read greyscale data")
 
-# Wrap the sawtooth wave signal generator into a producer
-readSawtooth = rr.Producer(
-    sawtooth,  # function that will generate data
-    bSawtooth,  # output data bus
-    0.05,  # delay between data generation cycles
-    bTerminate,  # bus to watch for termination signal
-    "Read sawtooth wave signal")
+
 
 # Wrap the multiplier function into a consumer-producer
-multiplyWaves = rr.ConsumerProducer(
-    mult,  # function that will process data
-    (bSquare, bSawtooth),  # input data buses
-    bMultiplied,  # output data bus
+directionDictator = rr.ConsumerProducer(
+    greyscale_interpreter.outputPosition,  # function that will process data
+    greyscale_bus,  # input data buses
+    steer_bus,  # output data bus
     0.05,  # delay between data control cycles
     bTerminate,  # bus to watch for termination signal
-    "Multiply Waves")
+    "Direction Dictator")
+
+steeringControl = rr.Consumer(
+    greyscale_control.steer,  # function that will process data
+    steer_bus,  # input data buses
+    0.05,  # delay between data control cycles
+    bTerminate,  # bus to watch for termination signal
+    "Direction Dictator")
+
 
 """ Fourth Part: Create RossROS Printer and Timer objects """
 
 # Make a printer that returns the most recent wave and product values
 printBuses = rr.Printer(
-    (bSquare, bSawtooth, bMultiplied, bTerminate),  # input data buses
+    (greyscale_bus, steer_bus),  # input data buses
     # bMultiplied,      # input data buses
     0.25,  # delay between printing cycles
     bTerminate,  # bus to watch for termination signal
@@ -148,9 +102,10 @@ terminationTimer = rr.Timer(
 """ Fifth Part: Concurrent execution """
 
 # Create a list of producer-consumers to execute concurrently
-producer_consumer_list = [readSquare,
-                          readSawtooth,
-                          multiplyWaves,
+producer_consumer_list = [
+                          readGreyScale,
+                          directionDictator,
+                          steeringControl,
                           printBuses,
                           terminationTimer]
 
