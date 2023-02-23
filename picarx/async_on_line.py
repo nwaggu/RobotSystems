@@ -33,13 +33,10 @@ class UltraSonicSensor():
                 return -1
         while self.echo.value()==1:
             pulse_end = time.time()
-            print("~~~~~~~~~~~~~~~~")
-            print(pulse_end)
-            print(timeout_start)
-            print(self.timeout)
             if pulse_end - timeout_start > self.timeout:
                 print("returned negative 1")
                 return -1
+        print("left while")
         during = pulse_end - pulse_start
         cm = round(during * 340 / 2 * 100, 2)
         print("cm")
