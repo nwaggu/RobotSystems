@@ -352,3 +352,13 @@ class ADC():
     def read_voltage(self):                             # 将读取的数据转化为电压值（0~3.3V）
         return 0.5
         
+
+class Ultrasonic():
+    def __init__(self, trig, echo, timeout=0.02):
+        pass
+
+    def _read(self):
+        return 1
+
+    def read(self, times=10):
+        return -1
