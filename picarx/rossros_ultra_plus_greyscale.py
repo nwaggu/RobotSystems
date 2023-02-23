@@ -29,17 +29,6 @@ from ultrasonic import UltraController, UltraInterpreter, UltraSonicSensor
 # logging.getLogger().setLevel(logging.DEBUG)
 logging.getLogger().setLevel(logging.INFO)
 
-
-
-
-
-
-    
-
-
-
-""" First Part: Signal generation and processing functions """
-
 #Greyscale Control
 car = Picarx()
 greyscale_sensor = PicarxSensor()
@@ -64,7 +53,7 @@ forward_bus = rr.Bus(False, "Foward Bus")
 
 """ Third Part: Wrap signal generation and processing functions into RossROS objects """
 
-# Wrap the square wave signal generator into a producer
+# Reads Greyscale data
 readGreyScale = rr.Producer(
     greyscale_sensor.read_greyscale_data,  # function that will generate data
     greyscale_bus,  # output data bus
@@ -72,7 +61,7 @@ readGreyScale = rr.Producer(
     bTerminate,  # bus to watch for termination signal
     "Read greyscale data")
 
-# Wrap the multiplier function into a consumer-producer
+# Determines direction
 directionDictator = rr.ConsumerProducer(
     greyscale_interpreter.outputPosition,  # function that will process data
     greyscale_bus,  # input data buses
@@ -81,6 +70,7 @@ directionDictator = rr.ConsumerProducer(
     bTerminate,  # bus to watch for termination signal
     "Direction Dictator")
 
+#Controls steering
 steeringControl = rr.Consumer(
     greyscale_control.steer,  # function that will process data
     steer_bus,  # input data buses
@@ -88,6 +78,7 @@ steeringControl = rr.Consumer(
     bTerminate,  # bus to watch for termination signal
     "Steering control")
 
+#Reads ultrasonic
 readUltra = rr.Producer(
     ultra_sensor.read,  # function that will generate data
     ultra_bus,  # output data bus
@@ -95,7 +86,7 @@ readUltra = rr.Producer(
     bTerminate,  # bus to watch for termination signal
     "Read ultrasonic sensor")
 
-# Wrap the multiplier function into a consumer-producer
+# Says to go forward
 decideForward = rr.ConsumerProducer(
     ultra_interpreter.determineGo,  # function that will process data
     ultra_bus,  # input data buses
@@ -104,19 +95,17 @@ decideForward = rr.ConsumerProducer(
     bTerminate,  # bus to watch for termination signal
     "Decide when to go forward")
 
+#Moves forwards
 goForward = rr.Consumer(
-    ultra_controller.drive,  # function that will process data
-    forward_bus,  # input data buses
-    0.2,  # delay between data control cycles
-    bTerminate,  # bus to watch for termination signal
+    ultra_controller.drive,  
+    forward_bus,  
+    0.2,  
+    bTerminate,  
     "Go Forward")
 
 
 
 """ Fourth Part: Create RossROS Printer and Timer objects """
-
-
-
 # Make a timer (a special kind of producer) that turns on the termination
 # bus when it triggers
 terminationTimer = rr.Timer(
