@@ -81,14 +81,7 @@ steeringControl = rr.Consumer(
 
 """ Fourth Part: Create RossROS Printer and Timer objects """
 
-# Make a printer that returns the most recent wave and product values
-printBuses = rr.Printer(
-    (greyscale_bus, steer_bus),  # input data buses
-    # bMultiplied,      # input data buses
-    0.25,  # delay between printing cycles
-    bTerminate,  # bus to watch for termination signal
-    "Print raw and derived data",  # Name of printer
-    "Data bus readings are: ")  # Prefix for output
+
 
 # Make a timer (a special kind of producer) that turns on the termination
 # bus when it triggers
@@ -106,7 +99,6 @@ producer_consumer_list = [
                           readGreyScale,
                           directionDictator,
                           steeringControl,
-                          printBuses,
                           terminationTimer]
 
 # Execute the list of producer-consumers concurrently
