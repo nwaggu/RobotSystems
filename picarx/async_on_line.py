@@ -53,6 +53,5 @@ class UltraSonicSensor():
 if __name__=='__main__':
     car = px.Picarx()
     while True:
-        print(car.get_grayscale_data())
         print(car.get_distance())
         
