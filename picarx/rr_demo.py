@@ -68,7 +68,7 @@ forward_bus = rr.Bus(False, "Foward Bus")
 readGreyScale = rr.Producer(
     greyscale_sensor.read_greyscale_data,  # function that will generate data
     greyscale_bus,  # output data bus
-    0.2,  # delay between data generation cycles
+    0.5,  # delay between data generation cycles
     bTerminate,  # bus to watch for termination signal
     "Read greyscale data")
 
@@ -77,21 +77,21 @@ directionDictator = rr.ConsumerProducer(
     greyscale_interpreter.outputPosition,  # function that will process data
     greyscale_bus,  # input data buses
     steer_bus,  # output data bus
-    0.2,  # delay between data control cycles
+    0.5,  # delay between data control cycles
     bTerminate,  # bus to watch for termination signal
     "Direction Dictator")
 
 steeringControl = rr.Consumer(
     greyscale_control.steer,  # function that will process data
     steer_bus,  # input data buses
-    0.2,  # delay between data control cycles
+    0.5,  # delay between data control cycles
     bTerminate,  # bus to watch for termination signal
     "Steering control")
 
 readUltra = rr.Producer(
     ultra_sensor.read,  # function that will generate data
     ultra_bus,  # output data bus
-    0.2,  # delay between data generation cycles
+    0.5,  # delay between data generation cycles
     bTerminate,  # bus to watch for termination signal
     "Read ultrasonic sensor")
 
@@ -100,14 +100,14 @@ decideForward = rr.ConsumerProducer(
     ultra_interpreter.determineGo,  # function that will process data
     ultra_bus,  # input data buses
     forward_bus,  # output data bus
-    0.2,  # delay between data control cycles
+    0.5,  # delay between data control cycles
     bTerminate,  # bus to watch for termination signal
     "Decide when to go forward")
 
 goForward = rr.Consumer(
     ultra_controller.drive,  # function that will process data
     forward_bus,  # input data buses
-    0.2,  # delay between data control cycles
+    0.5,  # delay between data control cycles
     bTerminate,  # bus to watch for termination signal
     "Go Forward")
 
