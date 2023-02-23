@@ -1,24 +1,4 @@
 #!/usr/bin/python3
-"""
-This file demonstrates the basic operation of a RossROS program.
-
-First, it defines two signal-generator functions (a +/-1 square wave and a saw-tooth wave) and a
-function for multiplying two scalar values together.
-
-Second, it generates buses to hold the most-recently sampled values for the signal-generator functions,
-the product of the two signals, and a countdown timer determining how long the program should run
-
-Third, it wraps the signal-generator functions into RossROS Producer objects, and the multiplication
-function into a RossROS Consumer-Producer object.
-
-Fourth, it creates a RossROS Printer object to periodically display the current bus values, and a RossROS Timer
-object to terminate the program after a fixed number of seconds
-
-Fifth and finally, it makes a list of all of the RossROS objects and sends them to the runConcurrently function
-for simultaneous execution
-
-"""
-
 import rossros as rr
 import logging
 import time
@@ -41,8 +21,7 @@ ultra_interpreter = UltraInterpreter()
 ultra_controller = UltraController(car=car)
 
 
-""" Second Part: Create buses for passing data """
-
+""" Create buses for passing data """
 # Initiate data and termination busses
 greyscale_bus = rr.Bus(greyscale_sensor.read_greyscale_data(),"Greyscale Bus")
 steer_bus = rr.Bus(0, "Steer Bus")
@@ -51,8 +30,8 @@ bTerminate = rr.Bus(0, "Termination Bus")
 ultra_bus = rr.Bus(0, "UltraSonic Bus")
 forward_bus = rr.Bus(False, "Foward Bus")
 
-""" Third Part: Wrap signal generation and processing functions into RossROS objects """
 
+""" Create P/PC/C """
 # Reads Greyscale data
 readGreyScale = rr.Producer(
     greyscale_sensor.read_greyscale_data,  # function that will generate data
@@ -103,9 +82,7 @@ goForward = rr.Consumer(
     bTerminate,  
     "Go Forward")
 
-
-
-""" Fourth Part: Create RossROS Printer and Timer objects """
+""" Fourth Part: Create RossROS Timer objects """
 # Make a timer (a special kind of producer) that turns on the termination
 # bus when it triggers
 terminationTimer = rr.Timer(
