@@ -36,6 +36,7 @@ class UltraSonicSensor():
                 return -1
         during = pulse_end - pulse_start
         cm = round(during * 340 / 2 * 100, 2)
+        print("cm")
         return cm
 
     def read(self, times=10):
