@@ -29,11 +29,11 @@ class UltraSonicSensor():
         while self.echo.value()==0:
             pulse_start = time.time()
             if pulse_start - timeout_start > self.timeout:
-                return -1
+                return 20
         while self.echo.value()==1:
             pulse_end = time.time()
             if pulse_end - timeout_start > self.timeout:
-                return -1
+                return 20
         during = pulse_end - pulse_start
         cm = round(during * 340 / 2 * 100, 2)
         return cm
@@ -44,7 +44,7 @@ class UltraSonicSensor():
             a = self._read()
             if a != -1:
                 return a
-        return -1
+        return 20
 
 
 class UltraInterpreter():
