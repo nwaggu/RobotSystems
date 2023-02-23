@@ -56,7 +56,7 @@ bTerminate = rr.Bus(0, "Termination Bus")
 readGreyScale = rr.Producer(
     greyscale_sensor.read_greyscale_data,  # function that will generate data
     greyscale_bus,  # output data bus
-    0.05,  # delay between data generation cycles
+    0.2,  # delay between data generation cycles
     bTerminate,  # bus to watch for termination signal
     "Read greyscale data")
 
@@ -67,14 +67,14 @@ directionDictator = rr.ConsumerProducer(
     greyscale_interpreter.outputPosition,  # function that will process data
     greyscale_bus,  # input data buses
     steer_bus,  # output data bus
-    0.05,  # delay between data control cycles
+    0.2,  # delay between data control cycles
     bTerminate,  # bus to watch for termination signal
     "Direction Dictator")
 
 steeringControl = rr.Consumer(
     greyscale_control.steer,  # function that will process data
     steer_bus,  # input data buses
-    0.05,  # delay between data control cycles
+    0.2,  # delay between data control cycles
     bTerminate,  # bus to watch for termination signal
     "Direction Dictator")
 
@@ -88,7 +88,7 @@ steeringControl = rr.Consumer(
 terminationTimer = rr.Timer(
     bTerminate,  # Output data bus
     60,  # Duration
-    0.01,  # Delay between checking for termination time
+    0.2,  # Delay between checking for termination time
     bTerminate,  # Bus to check for termination signal
     "Termination timer")  # Name of this timer
 
