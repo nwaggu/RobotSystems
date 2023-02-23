@@ -86,6 +86,7 @@ class Controller(object):
         self.car.set_dir_servo_angle(0)
     
     def steer(self, scaling):
+        print(scaling)
         self.scaling = scaling
         #Scale turn angle by position
         directed_angle = self.scaling*self.angle
