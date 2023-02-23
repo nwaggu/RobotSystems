@@ -28,6 +28,9 @@ class UltraSonicSensor():
         timeout_start = time.time()
         while self.echo.value()==0:
             pulse_start = time.time()
+            print("~~~~~~~~~~~~~~~~")
+            print(pulse_start)
+            print(timeout_start)
             if pulse_start - timeout_start > self.timeout:
                 return -1
         while self.echo.value()==1:
