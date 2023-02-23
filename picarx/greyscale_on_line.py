@@ -78,11 +78,11 @@ class Interpreter(object):
     
 
 class Controller(object):
-    def __init__(self, scaling=0, angle=35):
+    def __init__(self, car, scaling=0, angle=35):
         self.scaling = scaling
         self.angle = angle
         #Setup car
-        self.car = Picarx()
+        self.car = car
         self.car.set_dir_servo_angle(0)
     
     def steer(self, scaling):

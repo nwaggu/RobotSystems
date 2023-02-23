@@ -24,6 +24,8 @@ import logging
 import time
 import math
 from greyscale_on_line import PicarxSensor, Interpreter, Controller
+from picarx_improved import Picarx
+from ultrasonic import UltraController, UltraInterpreter, UltraSonicSensor
 # logging.getLogger().setLevel(logging.DEBUG)
 logging.getLogger().setLevel(logging.INFO)
 
@@ -38,10 +40,17 @@ logging.getLogger().setLevel(logging.INFO)
 
 """ First Part: Signal generation and processing functions """
 
-# Create two signal-generation functions
+#Greyscale Control
+car = Picarx()
 greyscale_sensor = PicarxSensor()
 greyscale_interpreter = Interpreter()
-greyscale_control = Controller() 
+greyscale_control = Controller(car=car) 
+
+#UltraSonic Control
+ultra_sensor = UltraSonicSensor()
+ultra_interpreter = UltraInterpreter()
+ultra_controller = UltraController(car=car)
+
 
 """ Second Part: Create buses for passing data """
 
@@ -49,6 +58,9 @@ greyscale_control = Controller()
 greyscale_bus = rr.Bus(greyscale_sensor.read_greyscale_data(),"Greyscale Bus")
 steer_bus = rr.Bus(0, "Steer Bus")
 bTerminate = rr.Bus(0, "Termination Bus")
+
+ultra_bus = rr.Bus(0, "UltraSonic Bus")
+forward_bus = rr.Bus(False, "Foward Bus")
 
 """ Third Part: Wrap signal generation and processing functions into RossROS objects """
 
@@ -59,8 +71,6 @@ readGreyScale = rr.Producer(
     0.2,  # delay between data generation cycles
     bTerminate,  # bus to watch for termination signal
     "Read greyscale data")
-
-
 
 # Wrap the multiplier function into a consumer-producer
 directionDictator = rr.ConsumerProducer(
@@ -76,7 +86,31 @@ steeringControl = rr.Consumer(
     steer_bus,  # input data buses
     0.2,  # delay between data control cycles
     bTerminate,  # bus to watch for termination signal
-    "Direction Dictator")
+    "Steering control")
+
+readUltra = rr.Producer(
+    ultra_sensor.read,  # function that will generate data
+    ultra_bus,  # output data bus
+    0.2,  # delay between data generation cycles
+    bTerminate,  # bus to watch for termination signal
+    "Read ultrasonic sensor")
+
+# Wrap the multiplier function into a consumer-producer
+decideForward = rr.ConsumerProducer(
+    ultra_interpreter.determineGo,  # function that will process data
+    ultra_bus,  # input data buses
+    forward_bus,  # output data bus
+    0.2,  # delay between data control cycles
+    bTerminate,  # bus to watch for termination signal
+    "Decide when to go forward")
+
+goForward = rr.Consumer(
+    ultra_controller.drive,  # function that will process data
+    forward_bus,  # input data buses
+    0.2,  # delay between data control cycles
+    bTerminate,  # bus to watch for termination signal
+    "Go Forward")
+
 
 
 """ Fourth Part: Create RossROS Printer and Timer objects """
@@ -98,7 +132,8 @@ terminationTimer = rr.Timer(
 producer_consumer_list = [
                           readGreyScale,
                           directionDictator,
-                          steeringControl,
+                          steeringControl,readUltra,
+                          goForward, decideForward,
                           terminationTimer]
 
 # Execute the list of producer-consumers concurrently
