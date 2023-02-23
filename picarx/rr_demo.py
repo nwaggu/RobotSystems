@@ -68,7 +68,7 @@ forward_bus = rr.Bus(False, "Foward Bus")
 readGreyScale = rr.Producer(
     greyscale_sensor.read_greyscale_data,  # function that will generate data
     greyscale_bus,  # output data bus
-    0.5,  # delay between data generation cycles
+    0.2,  # delay between data generation cycles
     bTerminate,  # bus to watch for termination signal
     "Read greyscale data")
 
@@ -107,7 +107,7 @@ decideForward = rr.ConsumerProducer(
 goForward = rr.Consumer(
     ultra_controller.drive,  # function that will process data
     forward_bus,  # input data buses
-    0.5,  # delay between data control cycles
+    0.2,  # delay between data control cycles
     bTerminate,  # bus to watch for termination signal
     "Go Forward")
 
